@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace ThachSanh.Systems
 {
@@ -58,11 +58,13 @@ namespace ThachSanh.Systems
 
         void Update()
         {
-            // Nhấn phím K để trừ 60 điểm và test cảnh báo
+#if UNITY_EDITOR
+            // Chỉ trong Editor: Nhấn phím K để trừ 60 điểm và test cảnh báo
             if (Input.GetKeyDown(KeyCode.K))
             {
                 ChangeKarma(-60);
             }
+#endif
         }
     }
 }
