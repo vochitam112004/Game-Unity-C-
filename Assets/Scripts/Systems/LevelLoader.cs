@@ -19,7 +19,7 @@ namespace ThachSanh.Systems
             // "03_HangDaiBang"    // Index 2 - thêm khi có scene
         };
 
-        private const string MainMenuSceneName = "MainMenu";
+        private const string MainMenuSceneName = "UI";
 
         /// <summary>
         /// Dữ liệu load game đang chờ - GameSceneBootstrap sẽ đọc và áp dụng khi scene load.

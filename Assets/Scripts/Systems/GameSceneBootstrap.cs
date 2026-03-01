@@ -72,7 +72,7 @@ public class GameSceneBootstrap : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
         if (player == null)
         {
-            var playerCombat = FindObjectOfType<PlayerCombat>();
+            var playerCombat = Object.FindFirstObjectByType<PlayerCombat>();
             if (playerCombat != null) player = playerCombat.gameObject;
         }
         return player;
