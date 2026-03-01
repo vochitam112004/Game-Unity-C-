@@ -1,9 +1,13 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Unity.VisualStudio.Editor.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Runtime.csproj" />
   <Project Path="sc.vegetationspawner.runtime.csproj" />
   <Project Path="PropertyMaster.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Editor.csproj" />
   <Project Path="sc.vegetationspawner.editor.csproj" />
   <Project Path="PropertyMaster.Editor.csproj" />
+  <Project Path="SampleAssembly.csproj" />
   <Project Path="WindControlEd.csproj" />
   <Project Path="WindControl.csproj" />
 </Solution>

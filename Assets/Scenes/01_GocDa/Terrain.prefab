@@ -35,6 +35,7 @@ RectTransform:
   - {fileID: 3960873682911859139}
   - {fileID: 4192704784902690268}
   - {fileID: 3458891141174761336}
+  - {fileID: 8635229925890133154}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -427,4 +428,66 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 6a9d5445bba25a542ae75e7f4f29e03f, type: 3}
   m_PrefabInstance: {fileID: 6058929967059605262}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8096564623827561289
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1930761416409495703}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 148.83234
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 16.79806
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 99.06536
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+      propertyPath: m_Name
+      value: Werewolf_LP_3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+--- !u!4 &8635229925890133154 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ab7ddb905f5246d4fae4e1e47c2c78e6, type: 3}
+  m_PrefabInstance: {fileID: 8096564623827561289}
   m_PrefabAsset: {fileID: 0}
