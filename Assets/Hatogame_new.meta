@@ -1,10 +1,15 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 <<<<<<<< HEAD:Assets/Hatogame_new.meta
 guid: 11ba2feaff20e0f429598d5dcfb46b8c
 folderAsset: yes
 ========
 guid: 217fb5db0398a834c9c30326b9ec8a3d
 >>>>>>>> 54866d0c0483d508e62bf379713114ecdc111a53:Assets/Mountain Terrain rocks and tree/URP Setup/URP Install.unitypackage.meta
+=======
+guid: 11ba2feaff20e0f429598d5dcfb46b8c
+folderAsset: yes
+>>>>>>> dcfe7c77bd678429f62dc760a746c3b8e44441f9
 DefaultImporter:
   externalObjects: {}
   userData: 
