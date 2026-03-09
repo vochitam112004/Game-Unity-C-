@@ -18,17 +18,26 @@ public class Player : MonoBehaviour
     private bool isRolling = false;
     private float rollTimer = 0f;
 
+    [Header("Gravity Settings")]
+    public float extraGravity = 40f; // Lực kéo dập xuống đất (Số càng to rơi càng nhanh)
+
     // Biến lưu trữ trạng thái hiện tại để chống "spam" trigger
     private string currentAnim = "idle";
 
     void FixedUpdate()
     {
+        // 1. Ép thêm trọng lực để nhân vật rớt xuống đất nhanh và đầm người hơn
+        playerRigid.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
+
+        // 2. KHI ĐANG ROLL -> KHÓA ĐIỀU KHIỂN
         if (isRolling)
         {
+            // Vẫn cho phép nhân vật lướt tới trước theo roll_speed, nhưng khóa không cho bấm W/S
             Vector3 rollVelocity = transform.forward * roll_speed;
             rollVelocity.y = playerRigid.linearVelocity.y;
             playerRigid.linearVelocity = rollVelocity;
-            return;
+
+            return; // Lệnh return này thoát sớm, bỏ qua toàn bộ code nhận phím WASD bên dưới
         }
 
         float moveVertical = Input.GetAxis("Vertical");
@@ -56,6 +65,7 @@ public class Player : MonoBehaviour
     {
         HandleRoll();
 
+        // KHI ĐANG ROLL -> KHÓA CHỨC NĂNG XOAY NGƯỜI (A/D) VÀ ĐỔI ANIMATION
         if (!isRolling)
         {
             HandleRotation();
