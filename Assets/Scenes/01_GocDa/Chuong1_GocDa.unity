@@ -529,7 +529,7 @@ MonoBehaviour:
   run_speed: 18
   back_speed: 8
   ro_speed: 150
-  roll_speed: 15
+  roll_speed: 8
   rollDuration: 2
   extraGravity: 40
 --- !u!1 &1983493517
