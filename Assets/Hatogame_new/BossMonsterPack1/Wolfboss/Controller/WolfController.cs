@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class WolfController : MonoBehaviour
 {
     private Animator anim;
     private Transform player;
