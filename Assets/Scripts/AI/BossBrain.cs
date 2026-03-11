@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI; // Thêm dòng này để Boss xài được UI
 
 public class BossBrain : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class BossBrain : MonoBehaviour
     public float phase2HealAmount = 500f;
     public float rangedAttackRange = 15f;
     public float transformDuration = 3f;
+
+    [Header("Giao diện UI Boss")]
+    public Image bossHealthBarFill; // Kéo thả cục BossHealth_Fill vào đây
 
     [Header("Hiệu ứng & Sát thương (MỚI)")]
     public GameObject bloodVFX;  // Nhét Prefab cục máu vào đây
@@ -158,6 +162,26 @@ public class BossBrain : MonoBehaviour
         currentHealth -= damageAmount;
         Debug.Log("Boss bị chém! Máu còn: " + currentHealth);
 
+        if (bossHealthBarFill != null)
+        {
+            bossHealthBarFill.fillAmount = currentHealth / maxHealth;
+        }
+
+        // --- HỆ THỐNG SUPER ARMOR (ĐÃ FIX CHUẨN XÁC) ---
+        // Boss đang thực sự vung tay = Đang ở state Attack VÀ thời gian hiện tại nằm trong lúc vung đòn
+        bool isActivelyAttacking = (state == BossState.Attack) && (Time.time < lastAttackTime + attackDuration);
+
+        // Nếu KHÔNG PHẢI đang vung tay -> Ăn đòn phải giật mình!
+        if (!isActivelyAttacking)
+        {
+            anim.SetTrigger("Hit");
+        }
+        else
+        {
+            Debug.Log("<color=orange>Boss đang vung tay! Super Armor kích hoạt!</color>");
+        }
+        // ----------------------------------------------
+
         if (currentHealth <= phase2HealthThreshold && !isPhase2)
         {
             TriggerPhase2();
@@ -199,8 +223,18 @@ public class BossBrain : MonoBehaviour
     void Die()
     {
         Debug.Log("BOSS ĐÃ CHẾT!");
-        agent.isStopped = true;
+
+        // 1. Tắt máy định vị để nó không tự giữ thăng bằng nữa
+        if (agent != null) agent.enabled = false;
+
+        // 2. Tắt luôn cái vỏ bọc va chạm (Capsule Collider) để xác rơi tự do xuống sàn
+        Collider bossCollider = GetComponent<Collider>();
+        if (bossCollider != null) bossCollider.enabled = false;
+
+        // 3. Chạy hoạt ảnh ngã gục
         anim.SetTrigger("Die");
+
+        // 4. Tắt bộ não đi
         this.enabled = false;
     }
 
