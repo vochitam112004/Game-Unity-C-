@@ -27,6 +27,12 @@ public class BossBrain : MonoBehaviour
     [Header("Giao diện UI Boss")]
     public Image bossHealthBarFill; // Kéo thả cục BossHealth_Fill vào đây
 
+    [Header("Ảo thuật Biến Hình (Đổi Model)")]
+    public GameObject phase1Model;
+    public GameObject phase2Model;
+    public Animator phase2Animator;
+    public GameObject smokeVFX;
+
     [Header("Hiệu ứng & Sát thương (MỚI)")]
     public GameObject bloodVFX;  // Nhét Prefab cục máu vào đây
     public Transform hitPoint;   // Nhét cục HitPoint trên ngực Thạch Sanh vào đây
