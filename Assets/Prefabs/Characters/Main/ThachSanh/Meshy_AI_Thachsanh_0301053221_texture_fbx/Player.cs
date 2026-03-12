@@ -26,10 +26,10 @@ public class Player : MonoBehaviour
     private string currentAnim = "idle";
     private bool isWeaponDrawn = false;
     private bool isActing = false;
-
-    // BIẾN MỚI: Quản lý trạng thái Đỡ đòn
     private bool isBlocking = false;
 
+    [Header("Combat Settings")]
+    public Collider axeHitbox; 
     void Start()
     {
         if (axeHand != null) axeHand.SetActive(false);
@@ -40,7 +40,6 @@ public class Player : MonoBehaviour
     {
         playerRigid.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
 
-        // CẬP NHẬT: Khóa di chuyển khi đang Block để nhân vật đứng trụ lại
         if (isRolling || isActing || isBlocking)
         {
             if (isRolling)
@@ -51,7 +50,6 @@ public class Player : MonoBehaviour
             }
             else
             {
-                // Đứng im tại chỗ khi rút/cất rìu HOẶC đang đỡ đòn
                 playerRigid.linearVelocity = new Vector3(0, playerRigid.linearVelocity.y, 0);
             }
             return;
@@ -64,45 +62,69 @@ public class Player : MonoBehaviour
     {
         AnimatorStateInfo stateInfo = playerAnim.GetCurrentAnimatorStateInfo(0);
 
-        isActing = stateInfo.IsName("equip") || stateInfo.IsName("unequip");
+        isActing = (currentAnim == "equip" || currentAnim == "unequip" ||
+                    currentAnim == "ATK1" || currentAnim == "combo1" || currentAnim == "combo2");
 
         if (isActing)
         {
-            return;
+            if (stateInfo.IsName(currentAnim))
+            {
+                if (stateInfo.normalizedTime >= 0.85f)
+                {
+                    currentAnim = "idle";
+                }
+            }
+            else if (!playerAnim.IsInTransition(0) && stateInfo.IsName("idle"))
+            {
+                currentAnim = "idle";
+            }
+            return; // Đang chém thì không nhận lệnh di chuyển
         }
 
         HandleRoll();
 
-        // --- CƠ CHẾ ĐỠ ĐÒN (BLOCK) ---
-        // Giữ Chuột Phải để đỡ đòn. Điều kiện: Phải đang cầm rìu và không lộn nhào
         isBlocking = Input.GetMouseButton(1) && isWeaponDrawn && !isRolling;
         playerAnim.SetBool("block", isBlocking);
 
         float targetBlend = isWeaponDrawn ? 1f : 0f;
         playerAnim.SetFloat("Blend", targetBlend, 0.1f, Time.deltaTime);
 
-        // Khóa phím E khi đang đỡ đòn
         if (Input.GetKeyDown(KeyCode.E) && !isRolling && !isBlocking)
         {
             isWeaponDrawn = !isWeaponDrawn;
-
-            if (isWeaponDrawn)
-            {
-                ChangeAnimation("equip");
-            }
-            else
-            {
-                ChangeAnimation("unequip");
-            }
+            if (isWeaponDrawn) ChangeAnimation("equip");
+            else ChangeAnimation("unequip");
             return;
         }
 
-        // Nếu đang đỡ đòn thì không cập nhật các animation di chuyển khác
+        if (isWeaponDrawn && !isRolling && !isBlocking)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                ChangeAnimation("ATK1");
+                return;
+            }
+            else if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ChangeAnimation("combo1");
+                return;
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                ChangeAnimation("combo2");
+                return;
+            }
+        }
+
         if (!isRolling && !isBlocking)
         {
             HandleAnimations();
         }
+    }
 
+    // --- HÀM MỚI: Luôn khóa hướng model sau khi Animator chạy xong ---
+    void LateUpdate()
+    {
         if (playerTrans != null && playerTrans.childCount > 0)
         {
             playerTrans.GetChild(0).localRotation = Quaternion.identity;
@@ -159,7 +181,6 @@ public class Player : MonoBehaviour
             rollTimer -= Time.deltaTime;
             if (rollTimer <= 0) isRolling = false;
         }
-        // Không cho lộn nhào khi đang đỡ đòn
         else if (Input.GetKeyDown(KeyCode.Space) && !isBlocking)
         {
             isRolling = true;
@@ -188,6 +209,15 @@ public class Player : MonoBehaviour
             currentAnim = newAnim;
         }
     }
+    public void EnableHitbox()
+    {
+        if (axeHitbox != null) axeHitbox.enabled = true;
+    }
+
+    public void DisableHitbox()
+    {
+        if (axeHitbox != null) axeHitbox.enabled = false;
+    }
 
     void ResetAllTriggers()
     {
@@ -200,5 +230,8 @@ public class Player : MonoBehaviour
         playerAnim.ResetTrigger("roll");
         playerAnim.ResetTrigger("equip");
         playerAnim.ResetTrigger("unequip");
+        playerAnim.ResetTrigger("ATK1");
+        playerAnim.ResetTrigger("combo1");
+        playerAnim.ResetTrigger("combo2");
     }
 }
