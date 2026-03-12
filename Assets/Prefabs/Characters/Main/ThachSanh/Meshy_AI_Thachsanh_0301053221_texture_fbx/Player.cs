@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 
     private string currentAnim = "idle";
     private bool isWeaponDrawn = false;
-    private bool isActing = false; // Biến kiểm soát trạng thái bận
+    private bool isActing = false;
 
     void Start()
     {
@@ -37,18 +37,17 @@ public class Player : MonoBehaviour
     {
         playerRigid.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
 
-        // NẾU ĐANG DIỄN HÀNH ĐỘNG (RÚT/CẤT RÌU HOẶC LĂN), KHÓA DI CHUYỂN
         if (isRolling || isActing)
         {
             if (isRolling)
             {
+                // Khi lăn, lao về phía trước dựa trên hướng hiện tại của model
                 Vector3 rollVelocity = transform.forward * roll_speed;
                 rollVelocity.y = playerRigid.linearVelocity.y;
                 playerRigid.linearVelocity = rollVelocity;
             }
             else
             {
-                // Đứng im tại chỗ khi rút/cất rìu
                 playerRigid.linearVelocity = new Vector3(0, playerRigid.linearVelocity.y, 0);
             }
             return;
@@ -59,35 +58,28 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // 1. CẬP NHẬT TRẠNG THÁI BẬN (ISACTING)
         AnimatorStateInfo stateInfo = playerAnim.GetCurrentAnimatorStateInfo(0);
+
+        // Cập nhật trạng thái khóa phím dựa trên Animator thực tế
         isActing = stateInfo.IsName("equip") || stateInfo.IsName("unequip");
 
-        // 2. NẾU ĐANG BẬN DIỄN ANIMATION EQUIP/UNEQUIP -> KHÓA SẠCH PHÍM
         if (isActing)
         {
-            // Chỉ khi diễn gần xong mới cho phép reset currentAnim
-            if (stateInfo.normalizedTime >= 0.95f && currentAnim != "idle")
-            {
-                currentAnim = "idle";
-                // Lưu ý: Không SetTrigger "idle" ở đây để tránh xung đột với Has Exit Time
-            }
-            return; // Thoát Update sớm, không nhận bất kỳ input nào khác
+            // Tôn trọng Animator: Không can thiệp, để nó tự diễn và gọi Animation Event
+            return;
         }
 
         HandleRoll();
 
-        // 3. CHỈ CẬP NHẬT BLEND TREE KHI THỰC SỰ ĐANG Ở IDLE
-        if (currentAnim == "idle")
-        {
-            float targetBlend = isWeaponDrawn ? 1f : 0f;
-            playerAnim.SetFloat("Blend", targetBlend, 0.1f, Time.deltaTime);
-        }
+        // Chỉ cập nhật Blend Tree khi không bận diễn equip/unequip
+        float targetBlend = isWeaponDrawn ? 1f : 0f;
+        playerAnim.SetFloat("Blend", targetBlend, 0.1f, Time.deltaTime);
 
-        // 4. BẤM E ĐỂ RÚT/CẤT RÌU
+        // Xử lý Input
         if (Input.GetKeyDown(KeyCode.E) && !isRolling)
         {
             isWeaponDrawn = !isWeaponDrawn;
+
             if (isWeaponDrawn)
             {
                 ChangeAnimation("equip");
@@ -96,53 +88,91 @@ public class Player : MonoBehaviour
             {
                 ChangeAnimation("unequip");
             }
+
+            // Thoát frame hiện tại để Animator có thời gian chuyển trạng thái
+            return;
         }
 
         if (!isRolling)
         {
-            HandleRotation();
+            // BỎ HandleRotation() cũ vì hướng nhìn giờ phụ thuộc vào Camera
             HandleAnimations();
         }
 
-        // Giữ model thẳng hướng
+        // Giữ hướng model thẳng, không bị nghiêng ngả
         if (playerTrans != null && playerTrans.childCount > 0)
         {
             playerTrans.GetChild(0).localRotation = Quaternion.identity;
         }
     }
 
+    // --- HÀM ĐƯỢC GỌI BỞI ANIMATION EVENT ---
     public void ShowAxe()
     {
         if (isWeaponDrawn)
         {
             if (axeHand != null) axeHand.SetActive(true);
             if (axeBack != null) axeBack.SetActive(false);
+            Debug.Log("Animation Event: Đã rút rìu.");
         }
         else
         {
             if (axeHand != null) axeHand.SetActive(false);
             if (axeBack != null) axeBack.SetActive(true);
+            Debug.Log("Animation Event: Đã cất rìu.");
         }
     }
 
+    // --- CẬP NHẬT: DI CHUYỂN THEO CAMERA (CAMERA-RELATIVE MOVEMENT) ---
     void HandleMovement()
     {
+        // Kiểm tra xem có Camera chính không
+        if (Camera.main == null)
+        {
+            Debug.LogWarning("Chưa có Main Camera!");
+            return;
+        }
+
+        // Lấy hướng trục Z (tiến/lùi) của Camera và chuẩn hóa về mặt phẳng ngang
+        Vector3 camForward = Camera.main.transform.forward;
+        camForward.y = 0;
+        camForward.Normalize();
+
+        // Lấy hướng trục X (trái/phải) của Camera và chuẩn hóa
+        Vector3 camRight = Camera.main.transform.right;
+        camRight.y = 0;
+        camRight.Normalize();
+
+        Vector3 moveVelocity = Vector3.zero;
+
+        // Xử lý phím di chuyển
         if (Input.GetKey(KeyCode.W))
         {
-            float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed;
-            Vector3 moveVelocity = transform.forward * currentSpeed;
-            moveVelocity.y = playerRigid.linearVelocity.y;
-            playerRigid.linearVelocity = moveVelocity;
+            moveVelocity += camForward * (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
         }
-        else if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
         {
-            Vector3 moveVelocity = -transform.forward * back_speed;
-            moveVelocity.y = playerRigid.linearVelocity.y;
-            playerRigid.linearVelocity = moveVelocity;
+            moveVelocity -= camForward * back_speed;
         }
-        else
+        if (Input.GetKey(KeyCode.A))
         {
-            playerRigid.linearVelocity = new Vector3(0, playerRigid.linearVelocity.y, 0);
+            moveVelocity -= camRight * walk_speed;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            moveVelocity += camRight * walk_speed;
+        }
+
+        // Áp dụng vận tốc
+        moveVelocity.y = playerRigid.linearVelocity.y; // Giữ nguyên trục Y (Trọng lực)
+        playerRigid.linearVelocity = moveVelocity;
+
+        // Nếu có phím bấm, xoay nhân vật hướng về phía đang di chuyển (Hoặc hướng Camera)
+        // Trong trường hợp này, mình ép nhân vật luôn quay lưng về phía Camera để giống RPG
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(camForward);
+            playerTrans.rotation = Quaternion.Slerp(playerTrans.rotation, targetRotation, ro_speed * Time.deltaTime);
         }
     }
 
@@ -161,11 +191,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void HandleRotation()
-    {
-        if (Input.GetKey(KeyCode.A)) playerTrans.Rotate(0, -ro_speed * Time.deltaTime, 0);
-        if (Input.GetKey(KeyCode.D)) playerTrans.Rotate(0, ro_speed * Time.deltaTime, 0);
-    }
+    // XÓA HÀM HandleRotation() CŨ
 
     void HandleAnimations()
     {
