@@ -5,8 +5,8 @@ public class WolfController : MonoBehaviour
     private Animator anim;
     private Transform player;
     public float moveSpeed = 2f;
-    public float detectRange = 8f;   // Tầm nhìn thấy Thạch Sanh
-    public float attackRange = 1.5f; // Tầm để dừng lại đánh
+    public float detectRange = 50f;   // Tầm nhìn thấy Thạch Sanh
+    public float attackRange = 5f; // Tầm để dừng lại đánh
     public int health = 3;           // Sói chết sau 3 hit
     private bool isDead = false;
 

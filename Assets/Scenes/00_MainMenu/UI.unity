@@ -231,7 +231,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1266153037}
   m_SourcePrefab: {fileID: 100100000, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
 --- !u!4 &300420423 stripped
 Transform:
@@ -246,18 +249,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 892379358}
     m_Modifications:
-    - target: {fileID: 3541081571894194904, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.169308
-      objectReference: {fileID: 0}
-    - target: {fileID: 3541081571894194904, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.169308
-      objectReference: {fileID: 0}
-    - target: {fileID: 3541081571894194904, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.169308
-      objectReference: {fileID: 0}
     - target: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
       propertyPath: m_Name
       value: Wolfboss_skin (2)
@@ -321,7 +312,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1125091169}
   m_SourcePrefab: {fileID: 100100000, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
 --- !u!1001 &445402653
 PrefabInstance:
@@ -447,6 +441,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5253934055972420021, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
   m_PrefabInstance: {fileID: 1534669095}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &546632249 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+  m_PrefabInstance: {fileID: 2005848599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &546632250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546632249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a529ede342042341a4d4dc0a5d37a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WolfController
+  moveSpeed: 2
+  detectRange: 50
+  attackRange: 1.5
+  health: 3
 --- !u!1001 &593676505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -522,12 +537,20 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767453661}
   m_SourcePrefab: {fileID: 100100000, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
 --- !u!4 &647061980 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5253934055972420021, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
   m_PrefabInstance: {fileID: 593676505}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &699070824 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+  m_PrefabInstance: {fileID: 445402651}
   m_PrefabAsset: {fileID: 0}
 --- !u!43 &815367411
 Mesh:
@@ -707,6 +730,27 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &820923577 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+  m_PrefabInstance: {fileID: 1534669095}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &820923578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820923577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a529ede342042341a4d4dc0a5d37a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WolfController
+  moveSpeed: 2
+  detectRange: 50
+  attackRange: 1.5
+  health: 3
 --- !u!1 &831377032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,6 +1076,8 @@ GameObject:
   - component: {fileID: 900000002}
   - component: {fileID: 900000003}
   - component: {fileID: 900000004}
+  - component: {fileID: 900000006}
+  - component: {fileID: 900000005}
   m_Layer: 0
   m_Name: _GameManager
   m_TagString: Untagged
@@ -1082,6 +1128,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneBootstrap
   playerTag: Player
+--- !u!114 &900000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9e793bb4e428a64699920dabdf68c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.Menu
+  settingsPanel: {fileID: 0}
+  mainMenuPanel: {fileID: 831377032}
+--- !u!114 &900000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449c571c17aa2334786343e187b4e241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.UI
+  menuContainer: {fileID: 831377032}
 --- !u!1 &910723202
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,7 +1237,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 910723205}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 900000005}
+        m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &910723205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1285,7 +1370,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 910850279}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 900000005}
+        m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
+        m_MethodName: OpenSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &910850279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1850,6 +1947,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5253934055972420021, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
   m_PrefabInstance: {fileID: 445402651}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1125091169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699070824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a529ede342042341a4d4dc0a5d37a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WolfController
+  moveSpeed: 2
+  detectRange: 50
+  attackRange: 1.5
+  health: 3
 --- !u!1 &1141103126
 GameObject:
   m_ObjectHideFlags: 0
@@ -2199,6 +2312,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1261831761}
   m_CullTransparentMesh: 1
+--- !u!1 &1266153036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+  m_PrefabInstance: {fileID: 250003626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1266153037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266153036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a529ede342042341a4d4dc0a5d37a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WolfController
+  moveSpeed: 2
+  detectRange: 50
+  attackRange: 1.5
+  health: 3
 --- !u!1 &1392829189
 GameObject:
   m_ObjectHideFlags: 0
@@ -2665,7 +2799,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 820923578}
   m_SourcePrefab: {fileID: 100100000, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
 --- !u!1 &1575275304
 GameObject:
@@ -2828,7 +2965,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1732204196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 900000005}
+        m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
+        m_MethodName: ContinueGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1732204196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2867,6 +3016,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1732204193}
   m_CullTransparentMesh: 1
+--- !u!1 &1767453660 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+  m_PrefabInstance: {fileID: 593676505}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1767453661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767453660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a529ede342042341a4d4dc0a5d37a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WolfController
+  moveSpeed: 2
+  detectRange: 50
+  attackRange: 1.5
+  health: 3
 --- !u!1 &1822008457
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,7 +3387,7 @@ Transform:
   m_GameObject: {fileID: 1822008457}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 235.14372, y: -55.4, z: 412.4726}
+  m_LocalPosition: {x: 252.5, y: -68.3, z: 421}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3298,7 +3468,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4873573759960769295, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 546632250}
   m_SourcePrefab: {fileID: 100100000, guid: 102ff3dbaa97e844ba431158821d117c, type: 3}
 --- !u!1 &2113699079
 GameObject:
