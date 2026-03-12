@@ -1,5 +1,18 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Meshy_AI_A_large_ancient_Viet_0304093658_texture_fbx/Meshy_AI_A_large_ancient_Viet_0304093658_texture.png.meta
 guid: ed8825612a243ec4b8d2177647b365bc
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+guid: 1348e4e9e431353498de1ce76255ccaf
+=======
+guid: 45fa93120436e914a990aae7431b20d8
+>>>>>>> 54866d0c0483d508e62bf379713114ecdc111a53
+=======
+guid: 1348e4e9e431353498de1ce76255ccaf
+guid: 45fa93120436e914a990aae7431b20d8
+>>>>>>> dcfe7c77bd678429f62dc760a746c3b8e44441f9
+>>>>>>> 99cf6064df4713e3a858aa97d008f3f2ac14b83c:Assets/Prefabs/Characters/Main/ThachSanh/Meshy_AI_Thachsanh_0301053221_texture_fbx/FinalCharacter/Meshy_AI_Thachsanh_0301053221_texture.fbm/Baked_BaseColor.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
