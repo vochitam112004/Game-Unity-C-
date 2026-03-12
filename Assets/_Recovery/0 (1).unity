@@ -927,8 +927,6 @@ GameObject:
   - component: {fileID: 900000002}
   - component: {fileID: 900000003}
   - component: {fileID: 900000004}
-  - component: {fileID: 900000006}
-  - component: {fileID: 900000005}
   m_Layer: 0
   m_Name: _GameManager
   m_TagString: Untagged
@@ -979,33 +977,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneBootstrap
   playerTag: Player
---- !u!114 &900000005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 900000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9e793bb4e428a64699920dabdf68c9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.Menu
-  settingsPanel: {fileID: 0}
-  mainMenuPanel: {fileID: 831377032}
---- !u!114 &900000006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 900000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 449c571c17aa2334786343e187b4e241, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.UI
-  menuContainer: {fileID: 831377032}
 --- !u!1 &910723202
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,7 +1060,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 900000005}
+      - m_Target: {fileID: 2113699084}
         m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
@@ -1222,7 +1193,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 900000005}
+      - m_Target: {fileID: 2113699084}
         m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
         m_MethodName: OpenSettings
         m_Mode: 1
@@ -1491,7 +1462,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 969063677}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2113699079}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &969063677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1749,7 +1732,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1063175799}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2113699084}
+        m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
+        m_MethodName: ContinueGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1063175799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2762,19 +2757,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1732204196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 900000005}
-        m_TargetAssemblyTypeName: ThachSanh.UI.Menu, Assembly-CSharp
-        m_MethodName: ContinueGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1732204196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2898,6 +2881,10 @@ GameObject:
   - component: {fileID: 2113699081}
   - component: {fileID: 2113699080}
   - component: {fileID: 2113699083}
+  - component: {fileID: 2113699087}
+  - component: {fileID: 2113699086}
+  - component: {fileID: 2113699085}
+  - component: {fileID: 2113699084}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3023,6 +3010,60 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &2113699084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113699079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9e793bb4e428a64699920dabdf68c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.Menu
+  settingsPanel: {fileID: 0}
+  mainMenuPanel: {fileID: 0}
+--- !u!114 &2113699085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113699079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d44df5a47c49746823c269e0a6ac47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.Pause
+  pausePanel: {fileID: 0}
+  settingsPanel: {fileID: 0}
+--- !u!114 &2113699086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113699079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6738dde5da96a16439870b98f68c16d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.Settings
+  settingsPanel: {fileID: 0}
+--- !u!114 &2113699087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113699079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 449c571c17aa2334786343e187b4e241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.UI.UI
+  menuContainer: {fileID: 0}
 --- !u!1 &2140626064
 GameObject:
   m_ObjectHideFlags: 0
