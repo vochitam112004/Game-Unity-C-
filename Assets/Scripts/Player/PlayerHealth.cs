@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI; // BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ GỌI UI
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxHealth = 500f;
+    public float maxHealth = 100f;
     public float currentHealth;
 
     [Header("Giao diện UI")]
@@ -33,7 +33,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void UpdateHealthUI()
+    public void UpdateHealthUI()
     {
         // Công thức toán học: Máu hiện tại / Máu tối đa = Tỉ lệ từ 0 đến 1
         if (healthBarFill != null)

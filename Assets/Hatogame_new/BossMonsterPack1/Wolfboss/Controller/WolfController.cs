@@ -1,21 +1,43 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
+using UnityEngine.AI; // Cần thiết để dùng NavMesh
+using UnityEngine.UI; // Cần thiết để điều khiển UI thanh máu
 
 public class WolfController : MonoBehaviour
 {
+    [Header("Cấu hình di chuyển")]
+    public float moveSpeed = 2f;
+    public float detectRange = 50f;
+    public float attackRange = 2.5f; // Chỉnh lại cho sát hơn chút
+
+    [Header("Cấu hình máu")]
+    public int maxHealth = 3;
+    private int currentHealth;
+    private bool isDead = false;
+
+    [Header("Tham chiếu UI")]
+    public Image healthBarFill;    // Kéo HealthBar_Fill vào đây
+    public TextMeshProUGUI healthText;       // Kéo HealthText vào đây
+    public GameObject uiCanvas;    // Kéo cái Canvas trên đầu sói vào đây
+
     private Animator anim;
     private Transform player;
-    public float moveSpeed = 2f;
-    public float detectRange = 50f;   // Tầm nhìn thấy Thạch Sanh
-    public float attackRange = 5f; // Tầm để dừng lại đánh
-    public int health = 3;           // Sói chết sau 3 hit
-    private bool isDead = false;
+    private NavMeshAgent agent;
 
     void Start()
     {
         anim = GetComponent<Animator>();
-        // Tìm Thạch Sanh qua Tag "Player"
+        agent = GetComponent<NavMeshAgent>();
+
+        // Tìm Thạch Sanh qua Tag
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
+
+        // Khởi tạo máu
+        currentHealth = maxHealth;
+        if (agent != null) agent.speed = moveSpeed;
+
+        UpdateHealthUI();
     }
 
     void Update()
@@ -24,53 +46,88 @@ public class WolfController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
+        // 1. Logic di chuyển và tấn công
         if (distance <= detectRange)
         {
             if (distance <= attackRange)
             {
-                // Đứng lại tấn công
-                anim.SetBool("IsMoving", false);
-                AttackPlayer();
+                StopAndAttack();
             }
             else
             {
-                // Đuổi theo Thạch Sanh
-                anim.SetBool("IsMoving", true);
-                MoveTowardsPlayer();
+                ChasePlayer();
             }
         }
         else
         {
-            anim.SetBool("IsMoving", false);
+            StopMoving();
+        }
+
+        // 2. Logic xoay UI hướng về Camera (Billboarding)
+        if (uiCanvas != null && Camera.main != null)
+        {
+            uiCanvas.transform.LookAt(uiCanvas.transform.position + Camera.main.transform.rotation * Vector3.forward,
+                                     Camera.main.transform.rotation * Vector3.up);
         }
     }
 
-    void MoveTowardsPlayer()
+    void ChasePlayer()
     {
-        Vector3 target = new Vector3(player.position.x, transform.position.y, player.position.z);
-        transform.LookAt(target);
-        transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+        anim.SetBool("IsMoving", true);
+        if (agent != null)
+        {
+            agent.isStopped = false;
+            agent.SetDestination(player.position);
+        }
     }
 
-    void AttackPlayer()
+    void StopAndAttack()
     {
-        // Xoay mặt về phía người chơi khi đánh
-        transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+        anim.SetBool("IsMoving", false);
+        if (agent != null) agent.isStopped = true;
+
+        // Xoay mặt về phía player
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0; // Không xoay lên xuống
+        transform.rotation = Quaternion.LookRotation(direction);
+
         anim.SetTrigger("Attack");
     }
 
-    // Hàm này được gọi khi Thạch Sanh đánh trúng Sói
-    public void TakeDamage()
+    void StopMoving()
+    {
+        anim.SetBool("IsMoving", false);
+        if (agent != null) agent.isStopped = true;
+    }
+
+    public void TakeDamage(int damage = 1)
     {
         if (isDead) return;
-        health--;
-        if (health <= 0) Die();
+
+        currentHealth -= damage;
+        UpdateHealthUI();
+
+        if (currentHealth <= 0) Die();
+    }
+
+    void UpdateHealthUI()
+    {
+        if (healthBarFill != null)
+        {
+            healthBarFill.fillAmount = (float)currentHealth / maxHealth;
+        }
+        if (healthText != null)
+        {
+            healthText.text = currentHealth + "/" + maxHealth;
+        }
     }
 
     void Die()
     {
         isDead = true;
         anim.SetTrigger("Die");
-        Destroy(gameObject, 2.5f); // Chờ diễn xong animation die rồi biến mất
+        if (agent != null) agent.isStopped = true;
+        if (uiCanvas != null) uiCanvas.SetActive(false); // Ẩn thanh máu khi chết
+        Destroy(gameObject, 2.5f);
     }
 }

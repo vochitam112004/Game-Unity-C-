@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     private bool isBlocking = false;
 
     [Header("Combat Settings")]
-    public Collider axeHitbox; 
+    public Collider axeHitbox;
     void Start()
     {
         if (axeHand != null) axeHand.SetActive(false);
