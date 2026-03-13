@@ -869,6 +869,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f894537e8c8c06469a4b5bb678b0d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AxeDamage
+  bloodPrefab: {fileID: 820835852487134754, guid: 2af11827e6b86334d8af5e5f59f76ea4, type: 3}
+  shakeDuration: 0.15
+  shakeMagnitude: 0.2
 --- !u!1 &1371387281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,9 +1733,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d15d80f46c0a754fa1be6e8c9887e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.Systems.KarmaManager
-  currentKarma: 0
-  maxKarma: 100
-  minKarma: -100
 --- !u!4 &1806342015
 Transform:
   m_ObjectHideFlags: 0
@@ -1760,7 +1760,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e8d7c6b5a4938271605049382716050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTag: Player
 --- !u!1 &1806342017
 GameObject:
   m_ObjectHideFlags: 0
