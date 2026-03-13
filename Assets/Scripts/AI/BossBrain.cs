@@ -127,7 +127,7 @@ public class BossBrain : MonoBehaviour
     public void TriggerHitPlayer()
     {
         float dist = Vector3.Distance(player.position, transform.position);
-        bool isCloseEnough = dist <= meleeAttackRange + 0.5f;
+        bool isCloseEnough = dist <= currentAttackRange + 0.5f;
 
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
@@ -222,7 +222,26 @@ public class BossBrain : MonoBehaviour
 
     void EndTransformation()
     {
+        // 1. Tắt con Boss cũ
+        if (phase1Model != null) phase1Model.SetActive(false);
+
+        // 2. Bật con Boss mới (Mãng Xà/Sói...)
+        if (phase2Model != null) phase2Model.SetActive(true);
+
+        // 3. Đổi não (Chuyển quyền điều khiển hoạt ảnh sang Animator mới)
+        if (phase2Animator != null) anim = phase2Animator;
+
+        // 4. Tạo khói che mắt (Nếu có)
+        if (smokeVFX != null)
+        {
+            GameObject smoke = Instantiate(smokeVFX, transform.position, Quaternion.identity);
+            Destroy(smoke, 3f); // Xóa khói sau 3 giây
+        }
+
+        // 5. Kết thúc biến hình, tiếp tục rượt đuổi
         if (currentHealth > 0) state = BossState.Chase;
+
+        Debug.Log("<color=magenta>BIẾN HÌNH HOÀN TẤT!</color>");
     }
 
     void Die()
@@ -249,7 +268,11 @@ public class BossBrain : MonoBehaviour
         }
         else
         {
-            anim.SetTrigger("RangedAttack");
+            // 3 đòn của Dạng 2 (Đã được nâng cấp)
+            int attackPhase2 = Random.Range(0, 3);
+            if (attackPhase2 == 0) anim.SetTrigger("RangedAttack"); // Đòn 1
+            else if (attackPhase2 == 1) anim.SetTrigger("RangedAttack2"); // Đòn 2
+            else anim.SetTrigger("RangedAttack3"); // Đòn 3
         }
     }
 
