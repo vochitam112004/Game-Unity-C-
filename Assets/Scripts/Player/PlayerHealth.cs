@@ -1,31 +1,66 @@
 using UnityEngine;
-using UnityEngine.UI; // BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ GỌI UI
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    public float currentHealth;
+    [Header("Health Settings")]
+    public int maxHealth = 100;
+    public int currentHealth;
 
-    [Header("Giao diện UI")]
-    public Image healthBarFill; // Kéo thả cục HealthBar_Fill vào đây
+    [Header("UI References")]
+    public Slider healthSlider;
+
+    [Header("Liên Kết Script")]
+    // ĐỔI THÀNH PUBLIC ĐỂ KÉO THẢ TRÊN INSPECTOR
+    public Player playerScript;
+
+    private bool isDead = false;
 
     void Start()
     {
-        // Vừa vào game là đầy máu
         currentHealth = maxHealth;
-        UpdateHealthUI();
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
+
+        // Tự động tìm script Player (Phòng hờ nếu Khoa quên kéo thả)
+        if (playerScript == null)
+        {
+            playerScript = GetComponent<Player>();
+        }
     }
 
-    // Hàm này sẽ bị con Boss gọi khi nó đấm trúng
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
+        if (isDead) return;
+
+        // --- KIỂM TRA ĐỠ ĐÒN ---
+        if (playerScript != null)
+        {
+            if (playerScript.isBlocking)
+            {
+                Debug.Log("🛡️ ĐỠ ĐÒN THÀNH CÔNG! Miễn nhiễm sát thương.");
+                return; // Thoát hàm ngay, KHÔNG trừ máu
+            }
+        }
+        else
+        {
+            Debug.Log("<color=red>LỖI: PlayerHealth không tìm thấy script Player!</color>");
+        }
+
+        // Nếu không đỡ, trừ máu như bình thường
         currentHealth -= damage;
+        currentHealth = Mathf.Max(currentHealth, 0);
 
-        // Không cho máu tụt xuống số âm
-        if (currentHealth < 0) currentHealth = 0;
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
 
-        UpdateHealthUI();
-        Debug.Log("OÁI! Thạch Sanh mất " + damage + " máu! Còn lại: " + currentHealth);
+        Debug.Log("Thạch Sanh bị cắn mất " + damage + " máu! Còn: " + currentHealth);
 
         if (currentHealth == 0)
         {
@@ -33,19 +68,24 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void UpdateHealthUI()
-    {
-        // Công thức toán học: Máu hiện tại / Máu tối đa = Tỉ lệ từ 0 đến 1
-        if (healthBarFill != null)
-        {
-            healthBarFill.fillAmount = currentHealth / maxHealth;
-        }
-    }
-
     void Die()
     {
-        Debug.Log("THẠCH SANH ĐÃ TỬ TRẬN!!!");
-        // Tạm thời tắt nhân vật đi khi chết
-        this.gameObject.SetActive(false);
+        isDead = true;
+        Debug.Log("Thạch Sanh đã gục ngã...");
+
+        if (playerScript != null)
+        {
+            // 1. Gọi Animator để phát Animation gục ngã (chữ "Die" phải khớp trong Unity)
+            if (playerScript.playerAnim != null)
+            {
+                // Reset các lệnh khác để tránh kẹt animation
+                playerScript.playerAnim.ResetTrigger("ATK1");
+                playerScript.playerAnim.ResetTrigger("combo1");
+                playerScript.playerAnim.SetTrigger("Die");
+            }
+
+            // 2. Khóa code điều khiển để Thạch Sanh không đi lại hay chém được nữa
+            playerScript.enabled = false;
+        }
     }
 }

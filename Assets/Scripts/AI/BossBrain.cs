@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI; // Thêm dòng này để Boss xài được UI
+using UnityEngine.UI;
 
 public class BossBrain : MonoBehaviour
 {
     public Transform player;
-    public PlayerHealth playerHealth; // Thêm dòng này để Boss biết ai đang giữ Máu
+    public PlayerHealth playerHealth;
 
     [Header("Chỉ số Di chuyển & Tầm nhìn")]
     public float detectRange = 20f;
@@ -25,7 +25,7 @@ public class BossBrain : MonoBehaviour
     public float transformDuration = 3f;
 
     [Header("Giao diện UI Boss")]
-    public Image bossHealthBarFill; // Kéo thả cục BossHealth_Fill vào đây
+    public Image bossHealthBarFill;
 
     [Header("Ảo thuật Biến Hình (Đổi Model)")]
     public GameObject phase1Model;
@@ -34,9 +34,9 @@ public class BossBrain : MonoBehaviour
     public GameObject smokeVFX;
 
     [Header("Hiệu ứng & Sát thương (MỚI)")]
-    public GameObject bloodVFX;  // Nhét Prefab cục máu vào đây
-    public Transform hitPoint;   // Nhét cục HitPoint trên ngực Thạch Sanh vào đây
-    public float attackDamage = 50f; // Lượng máu Thạch Sanh sẽ bị trừ
+    public GameObject bloodVFX;
+    public Transform hitPoint;
+    public float attackDamage = 50f; // BIẾN SÁT THƯƠNG ĐÂY RỒI
 
     public bool isPhase2 = false;
     private float currentAttackRange;
@@ -84,7 +84,6 @@ public class BossBrain : MonoBehaviour
                 agent.isStopped = false;
                 anim.SetBool("isMoving", true);
 
-                // Dọn dẹp lệnh đánh cũ (gồm cả 3 chiêu Phase 1 và chiêu Phase 2)
                 anim.ResetTrigger("Attack");
                 anim.ResetTrigger("Skill");
                 anim.ResetTrigger("Kick");
@@ -104,10 +103,12 @@ public class BossBrain : MonoBehaviour
                 FaceTarget(player.position);
 
                 if (Time.time < lastAttackTime + attackDuration) break;
+
                 if (Time.time < lastAttackTime + (attackDuration * 0.5f))
                 {
                     transform.Translate(Vector3.forward * 2f * Time.deltaTime);
                 }
+
                 if (dist > currentAttackRange + 0.5f)
                 {
                     state = BossState.Chase;
@@ -123,21 +124,17 @@ public class BossBrain : MonoBehaviour
         RotateSmooth();
     }
 
-    // --- HÀM ĐẶC BIỆT: GỌI TỪ ANIMATION EVENT (BÓP CÒ VĂNG MÁU) ---
+    // --- ĐÃ FIX CẤU TRÚC LỆNH IF/ELSE ---
     public void TriggerHitPlayer()
     {
         float dist = Vector3.Distance(player.position, transform.position);
 
-        // 1. SIẾT CHẶT KHOẢNG CÁCH: Chỉ cho phép sai số 0.5 mét thay vì 1.5 mét
         bool isCloseEnough = dist <= meleeAttackRange + 0.5f;
 
-        // 2. KIỂM TRA GÓC ĐÁNH: Thạch Sanh phải đứng ở phía TRƯỚC MẶT Boss (Góc quét 120 độ)
-        // Nếu Thạch Sanh lách ra sau lưng hoặc bên hông xa thì Boss đấm trượt!
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
         bool isInFront = angle < 60f;
 
-        // CHỈ KHI: Đủ gần VÀ Đứng trước mặt -> Mới tính là trúng đòn
         if (isCloseEnough && isInFront)
         {
             if (bloodVFX != null && hitPoint != null)
@@ -145,22 +142,21 @@ public class BossBrain : MonoBehaviour
                 GameObject blood = Instantiate(bloodVFX, hitPoint.position, Quaternion.LookRotation(transform.position - hitPoint.position));
                 Destroy(blood, 2f);
             }
-            // DÒNG CODE MỚI THÊM: Gây sát thương thật sự lên Thạch Sanh!
+
             if (playerHealth != null)
             {
-                playerHealth.TakeDamage(attackDamage);
+                // Đã đổi thành attackDamage (tên biến đúng khai báo ở trên)
+                playerHealth.TakeDamage(Mathf.RoundToInt(attackDamage));
             }
 
-        Debug.Log("<color=red>BỤP! THẠCH SANH BỊ CHÉM TRÚNG TÓE MÁU!</color>");
+            Debug.Log("<color=red>BỤP! THẠCH SANH BỊ CHÉM TRÚNG TÓE MÁU!</color>");
         }
-        else
+        else // Kéo chữ else ra ngoài cho đúng cấu trúc C#
         {
-            // In ra vàng để bạn dễ thấy Thạch Sanh vừa né thành công
             Debug.Log("<color=yellow>NÉ ĐÒN THÀNH CÔNG! (Thạch Sanh đã chạy xa hoặc lách ra sau lưng)</color>");
         }
     }
 
-    // --- HỆ THỐNG MÁU VÀ CHỊU ĐÒN (PHASE 2) ---
     public void TakeDamage(float damageAmount)
     {
         if (currentHealth <= 0 || state == BossState.Transforming) return;
@@ -173,11 +169,8 @@ public class BossBrain : MonoBehaviour
             bossHealthBarFill.fillAmount = currentHealth / maxHealth;
         }
 
-        // --- HỆ THỐNG SUPER ARMOR (ĐÃ FIX CHUẨN XÁC) ---
-        // Boss đang thực sự vung tay = Đang ở state Attack VÀ thời gian hiện tại nằm trong lúc vung đòn
         bool isActivelyAttacking = (state == BossState.Attack) && (Time.time < lastAttackTime + attackDuration);
 
-        // Nếu KHÔNG PHẢI đang vung tay -> Ăn đòn phải giật mình!
         if (!isActivelyAttacking)
         {
             anim.SetTrigger("Hit");
@@ -186,7 +179,6 @@ public class BossBrain : MonoBehaviour
         {
             Debug.Log("<color=orange>Boss đang vung tay! Super Armor kích hoạt!</color>");
         }
-        // ----------------------------------------------
 
         if (currentHealth <= phase2HealthThreshold && !isPhase2)
         {
@@ -230,17 +222,12 @@ public class BossBrain : MonoBehaviour
     {
         Debug.Log("BOSS ĐÃ CHẾT!");
 
-        // 1. Tắt máy định vị để nó không tự giữ thăng bằng nữa
         if (agent != null) agent.enabled = false;
 
-        // 2. Tắt luôn cái vỏ bọc va chạm (Capsule Collider) để xác rơi tự do xuống sàn
         Collider bossCollider = GetComponent<Collider>();
         if (bossCollider != null) bossCollider.enabled = false;
 
-        // 3. Chạy hoạt ảnh ngã gục
         anim.SetTrigger("Die");
-
-        // 4. Tắt bộ não đi
         this.enabled = false;
     }
 
@@ -248,7 +235,6 @@ public class BossBrain : MonoBehaviour
     {
         if (!isPhase2)
         {
-            // Cận chiến 3 chiêu
             int attack = Random.Range(0, 3);
             if (attack == 0) anim.SetTrigger("Attack");
             else if (attack == 1) anim.SetTrigger("Skill");
@@ -256,7 +242,6 @@ public class BossBrain : MonoBehaviour
         }
         else
         {
-            // Tầm xa
             anim.SetTrigger("RangedAttack");
         }
     }

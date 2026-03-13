@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     private string currentAnim = "idle";
     private bool isWeaponDrawn = false;
     private bool isActing = false;
-    private bool isBlocking = false;
+    public bool isBlocking = false;
 
     [Header("Combat Settings")]
     public Collider axeHitbox;

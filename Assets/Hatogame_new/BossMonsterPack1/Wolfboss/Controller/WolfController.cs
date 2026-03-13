@@ -1,14 +1,20 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.AI; // Cần thiết để dùng NavMesh
-using UnityEngine.UI; // Cần thiết để điều khiển UI thanh máu
+using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class WolfController : MonoBehaviour
 {
     [Header("Cấu hình di chuyển")]
     public float moveSpeed = 2f;
+    public float chaseSpeedMultiplier = 1.5f;
     public float detectRange = 50f;
-    public float attackRange = 2.5f; // Chỉnh lại cho sát hơn chút
+    public float attackRange = 2.5f;
+
+    [Header("Cấu hình đi dạo (Wander)")]
+    public float wanderRadius = 15f; // Khoảng cách tối đa mỗi lần đi dạo
+    public float wanderTimer = 5f;   // Đứng chơi bao lâu thì đi tiếp
+    private float timer;
 
     [Header("Cấu hình máu")]
     public int maxHealth = 3;
@@ -16,27 +22,29 @@ public class WolfController : MonoBehaviour
     private bool isDead = false;
 
     [Header("Tham chiếu UI")]
-    public Image healthBarFill;    // Kéo HealthBar_Fill vào đây
-    public TextMeshProUGUI healthText;       // Kéo HealthText vào đây
-    public GameObject uiCanvas;    // Kéo cái Canvas trên đầu sói vào đây
+    public Image healthBarFill;
+    public TextMeshProUGUI healthText;
+    public GameObject uiCanvas;
 
     private Animator anim;
     private Transform player;
     private NavMeshAgent agent;
+
+    [Header("Cấu hình chiến đấu")]
+    public Collider attackHitbox;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
 
-        // Tìm Thạch Sanh qua Tag
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
 
-        // Khởi tạo máu
         currentHealth = maxHealth;
         if (agent != null) agent.speed = moveSpeed;
 
+        timer = wanderTimer; // Khởi tạo đồng hồ đi dạo
         UpdateHealthUI();
     }
 
@@ -46,7 +54,7 @@ public class WolfController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
-        // 1. Logic di chuyển và tấn công
+        // 1. Logic di chuyển và chiến đấu
         if (distance <= detectRange)
         {
             if (distance <= attackRange)
@@ -60,7 +68,8 @@ public class WolfController : MonoBehaviour
         }
         else
         {
-            StopMoving();
+            // Thay thế StopMoving() bằng Wander() khi không thấy người chơi
+            Wander();
         }
 
         // 2. Logic xoay UI hướng về Camera (Billboarding)
@@ -71,11 +80,41 @@ public class WolfController : MonoBehaviour
         }
     }
 
+    // --- CÁC HÀM HÀNH ĐỘNG ---
+
+    void Wander()
+    {
+        if (agent != null) agent.speed = moveSpeed; // Trả lại tốc độ đi bộ bình thường
+
+        timer += Time.deltaTime;
+
+        if (timer >= wanderTimer)
+        {
+            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+            if (agent != null)
+            {
+                agent.isStopped = false;
+                agent.SetDestination(newPos);
+            }
+            timer = 0;
+        }
+
+        if (agent.velocity.magnitude > 0.1f)
+        {
+            anim.SetBool("IsMoving", true);
+        }
+        else
+        {
+            anim.SetBool("IsMoving", false);
+        }
+    }
+
     void ChasePlayer()
     {
         anim.SetBool("IsMoving", true);
         if (agent != null)
         {
+            agent.speed = moveSpeed * chaseSpeedMultiplier; // Bật chế độ chạy nước rút
             agent.isStopped = false;
             agent.SetDestination(player.position);
         }
@@ -86,9 +125,8 @@ public class WolfController : MonoBehaviour
         anim.SetBool("IsMoving", false);
         if (agent != null) agent.isStopped = true;
 
-        // Xoay mặt về phía player
         Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0; // Không xoay lên xuống
+        direction.y = 0;
         transform.rotation = Quaternion.LookRotation(direction);
 
         anim.SetTrigger("Attack");
@@ -100,6 +138,17 @@ public class WolfController : MonoBehaviour
         if (agent != null) agent.isStopped = true;
     }
 
+    // --- HÀM HỖ TRỢ TOÁN HỌC ---
+    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    {
+        Vector3 randDirection = Random.insideUnitSphere * dist;
+        randDirection += origin;
+        NavMeshHit navHit;
+        NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+        return navHit.position;
+    }
+
+    // --- LOGIC MÁU VÀ UI ---
     public void TakeDamage(int damage = 1)
     {
         if (isDead) return;
@@ -108,6 +157,17 @@ public class WolfController : MonoBehaviour
         UpdateHealthUI();
 
         if (currentHealth <= 0) Die();
+    }
+
+    // --- HÀM GỌI TỪ ANIMATION EVENT ---
+    public void EnableHitbox()
+    {
+        if (attackHitbox != null) attackHitbox.enabled = true;
+    }
+
+    public void DisableHitbox()
+    {
+        if (attackHitbox != null) attackHitbox.enabled = false;
     }
 
     void UpdateHealthUI()
@@ -127,7 +187,7 @@ public class WolfController : MonoBehaviour
         isDead = true;
         anim.SetTrigger("Die");
         if (agent != null) agent.isStopped = true;
-        if (uiCanvas != null) uiCanvas.SetActive(false); // Ẩn thanh máu khi chết
+        if (uiCanvas != null) uiCanvas.SetActive(false);
         Destroy(gameObject, 2.5f);
     }
 }
