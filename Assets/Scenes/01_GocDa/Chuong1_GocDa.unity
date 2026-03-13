@@ -2005,6 +2005,8 @@ MonoBehaviour:
   bloodPrefab: {fileID: 820835852487134754, guid: 2af11827e6b86334d8af5e5f59f76ea4, type: 3}
   shakeDuration: 0.15
   shakeMagnitude: 0.2
+  wolfDamage: 1
+  bossDamage: 50
 --- !u!65 &1277954709 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 5684937482834059416, guid: adc96b8f97309f94e980c430d58700c5, type: 3}
@@ -3784,25 +3786,49 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChanTinhCon@Zombie Run
       objectReference: {fileID: 0}
+    - target: {fileID: 4936071586124611242, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5039881587361509409, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_Height
-      value: 3
+      value: 1.9661809
+      objectReference: {fileID: 0}
+    - target: {fileID: 5039881587361509409, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_Radius
+      value: 0.6782668
       objectReference: {fileID: 0}
     - target: {fileID: 5039881587361509409, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_Center.y
-      value: 1.2
+      value: 0.98196703
+      objectReference: {fileID: 0}
+    - target: {fileID: 5039881587361509409, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_Center.z
+      value: 0.17826678
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.128745
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.0179212
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.25823
       objectReference: {fileID: 0}
     - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 477.95667
+      value: 477.96
       objectReference: {fileID: 0}
     - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.985
+      value: -0.02
       objectReference: {fileID: 0}
     - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 205.895
+      value: 205.79
       objectReference: {fileID: 0}
     - target: {fileID: 5749867848619746320, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3838,7 +3864,11 @@ PrefabInstance:
       objectReference: {fileID: 970377297}
     - target: {fileID: 8436976694726762128, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: maxHealth
-      value: 600
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8436976694726762128, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
+      propertyPath: attackDamage
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8436976694726762128, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: playerHealth
@@ -3846,7 +3876,7 @@ PrefabInstance:
       objectReference: {fileID: 970377304}
     - target: {fileID: 8436976694726762128, guid: b88a900db476b4843bd27d3e3b52e20e, type: 3}
       propertyPath: currentHealth
-      value: 600
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4646,7 +4676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3467808935572344427, guid: adc96b8f97309f94e980c430d58700c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 346.6
+      value: 461.2
       objectReference: {fileID: 0}
     - target: {fileID: 3467808935572344427, guid: adc96b8f97309f94e980c430d58700c5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4654,7 +4684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3467808935572344427, guid: adc96b8f97309f94e980c430d58700c5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 479.5
+      value: 242.4
       objectReference: {fileID: 0}
     - target: {fileID: 3467808935572344427, guid: adc96b8f97309f94e980c430d58700c5, type: 3}
       propertyPath: m_LocalRotation.w

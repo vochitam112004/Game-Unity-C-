@@ -33,10 +33,10 @@ public class BossBrain : MonoBehaviour
     public Animator phase2Animator;
     public GameObject smokeVFX;
 
-    [Header("Hiệu ứng & Sát thương (MỚI)")]
+    [Header("Hiệu ứng & Sát thương")]
     public GameObject bloodVFX;
     public Transform hitPoint;
-    public float attackDamage = 50f; // BIẾN SÁT THƯƠNG ĐÂY RỒI
+    public float attackDamage = 50f;
 
     public bool isPhase2 = false;
     private float currentAttackRange;
@@ -124,11 +124,9 @@ public class BossBrain : MonoBehaviour
         RotateSmooth();
     }
 
-    // --- ĐÃ FIX CẤU TRÚC LỆNH IF/ELSE ---
     public void TriggerHitPlayer()
     {
         float dist = Vector3.Distance(player.position, transform.position);
-
         bool isCloseEnough = dist <= meleeAttackRange + 0.5f;
 
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
@@ -145,13 +143,12 @@ public class BossBrain : MonoBehaviour
 
             if (playerHealth != null)
             {
-                // Đã đổi thành attackDamage (tên biến đúng khai báo ở trên)
                 playerHealth.TakeDamage(Mathf.RoundToInt(attackDamage));
             }
 
             Debug.Log("<color=red>BỤP! THẠCH SANH BỊ CHÉM TRÚNG TÓE MÁU!</color>");
         }
-        else // Kéo chữ else ra ngoài cho đúng cấu trúc C#
+        else
         {
             Debug.Log("<color=yellow>NÉ ĐÒN THÀNH CÔNG! (Thạch Sanh đã chạy xa hoặc lách ra sau lưng)</color>");
         }
@@ -163,6 +160,16 @@ public class BossBrain : MonoBehaviour
 
         currentHealth -= damageAmount;
         Debug.Log("Boss bị chém! Máu còn: " + currentHealth);
+
+        // --- CẬP NHẬT MỚI: TÓE MÁU KHI BOSS BỊ CHÉM TRÚNG ---
+        if (bloodVFX != null)
+        {
+            // Tự động tính toán vị trí giữa bụng/ngực Boss (cao lên 1.5m) để xịt máu
+            Vector3 bloodSpawnPos = transform.position + Vector3.up * 1.5f;
+            GameObject bossBlood = Instantiate(bloodVFX, bloodSpawnPos, Quaternion.identity);
+            Destroy(bossBlood, 2f); // Xóa vết máu sau 2 giây cho đỡ lag
+        }
+        // ----------------------------------------------------
 
         if (bossHealthBarFill != null)
         {
@@ -220,7 +227,7 @@ public class BossBrain : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("BOSS ĐÃ CHẾT!");
+        Debug.Log("BOSS ĐĐÃ CHẾT!");
 
         if (agent != null) agent.enabled = false;
 

@@ -31,10 +31,13 @@ public class Player : MonoBehaviour
 
     [Header("Combat Settings")]
     public Collider axeHitbox;
+
     void Start()
     {
         if (axeHand != null) axeHand.SetActive(false);
         if (axeBack != null) axeBack.SetActive(true);
+
+        DisableHitbox(); // [MỚI] Đảm bảo lúc mới vào game rìu không gây sát thương
     }
 
     void FixedUpdate()
@@ -73,19 +76,27 @@ public class Player : MonoBehaviour
                 if (stateInfo.normalizedTime >= 0.85f)
                 {
                     currentAnim = "idle";
+                    DisableHitbox(); // [MỚI] Khi chém xong về thế thủ, bắt buộc tắt Hitbox
                 }
             }
             else if (!playerAnim.IsInTransition(0) && stateInfo.IsName("idle"))
             {
                 currentAnim = "idle";
+                DisableHitbox(); // [MỚI] Đề phòng kẹt animation, cứ về idle là tắt
             }
-            return; // Đang chém thì không nhận lệnh di chuyển
+            return;
         }
 
         HandleRoll();
 
         isBlocking = Input.GetMouseButton(1) && isWeaponDrawn && !isRolling;
         playerAnim.SetBool("block", isBlocking);
+
+        // [MỚI] KHOÁ CHẶT SÁT THƯƠNG KHI ĐANG ĐỠ
+        if (isBlocking)
+        {
+            DisableHitbox();
+        }
 
         float targetBlend = isWeaponDrawn ? 1f : 0f;
         playerAnim.SetFloat("Blend", targetBlend, 0.1f, Time.deltaTime);
@@ -123,7 +134,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // --- HÀM MỚI: Luôn khóa hướng model sau khi Animator chạy xong ---
     void LateUpdate()
     {
         if (playerTrans != null && playerTrans.childCount > 0)
@@ -210,6 +220,7 @@ public class Player : MonoBehaviour
             currentAnim = newAnim;
         }
     }
+
     public void EnableHitbox()
     {
         if (axeHitbox != null) axeHitbox.enabled = true;
