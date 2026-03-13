@@ -38,6 +38,8 @@ public class BossBrain : MonoBehaviour
     public Transform hitPoint;
     public float attackDamage = 50f;
 
+    public GameObject healthBarCanvas; // Kéo cái BossHealthCanvas vào đây
+
     public bool isPhase2 = false;
     private float currentAttackRange;
 
@@ -246,7 +248,11 @@ public class BossBrain : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("BOSS ĐĐÃ CHẾT!");
+        Debug.Log("BOSS ĐÃ CHẾT!");
+
+        // --- THÊM DÒNG NÀY ĐỂ TẮT THANH MÁU ---
+        if (healthBarCanvas != null) healthBarCanvas.SetActive(false);
+        // --------------------------------------
 
         if (agent != null) agent.enabled = false;
 
