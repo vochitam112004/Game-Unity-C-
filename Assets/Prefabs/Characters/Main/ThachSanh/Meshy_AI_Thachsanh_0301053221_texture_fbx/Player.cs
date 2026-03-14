@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public float walk_speed = 12f;
     public float run_speed = 18f;
     public float back_speed = 8f;
-    public float ro_speed = 150f;
+    public float ro_speed = 15f;
     public float roll_speed = 15f;
 
     [Header("Roll & Physics")]
@@ -32,16 +32,15 @@ public class Player : MonoBehaviour
     [Header("Combat Settings")]
     public Collider axeHitbox;
 
-    // Camera riêng của player (child camera), không dùng Camera.main vì scene có nhiều camera
     private Camera playerCamera;
 
     void Start()
     {
-        // Lấy camera gắn vào Player (child), ưu tiên hơn Camera.main
         playerCamera = GetComponentInChildren<Camera>();
-        if (playerCamera == null)
-            playerCamera = Camera.main;
+        if (playerCamera == null) playerCamera = Camera.main;
 
+        // Thiết lập ban đầu: Rìu ở trên lưng
+        isWeaponDrawn = false;
         if (axeHand != null) axeHand.SetActive(false);
         if (axeBack != null) axeBack.SetActive(true);
 
@@ -52,7 +51,7 @@ public class Player : MonoBehaviour
     {
         playerRigid.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
 
-        if (isRolling || isActing || isBlocking)
+        if (isRolling || isActing)
         {
             if (isRolling)
             {
@@ -84,13 +83,13 @@ public class Player : MonoBehaviour
                 if (stateInfo.normalizedTime >= 0.85f)
                 {
                     currentAnim = "idle";
-                    DisableHitbox(); // [MỚI] Khi chém xong về thế thủ, bắt buộc tắt Hitbox
+                    DisableHitbox();
                 }
             }
             else if (!playerAnim.IsInTransition(0) && stateInfo.IsName("idle"))
             {
                 currentAnim = "idle";
-                DisableHitbox(); // [MỚI] Đề phòng kẹt animation, cứ về idle là tắt
+                DisableHitbox();
             }
             return;
         }
@@ -100,11 +99,7 @@ public class Player : MonoBehaviour
         isBlocking = Input.GetMouseButton(1) && isWeaponDrawn && !isRolling;
         playerAnim.SetBool("block", isBlocking);
 
-        // [MỚI] KHOÁ CHẶT SÁT THƯƠNG KHI ĐANG ĐỠ
-        if (isBlocking)
-        {
-            DisableHitbox();
-        }
+        if (isBlocking) DisableHitbox();
 
         float targetBlend = isWeaponDrawn ? 1f : 0f;
         playerAnim.SetFloat("Blend", targetBlend, 0.1f, Time.deltaTime);
@@ -119,21 +114,9 @@ public class Player : MonoBehaviour
 
         if (isWeaponDrawn && !isRolling && !isBlocking)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                ChangeAnimation("ATK1");
-                return;
-            }
-            else if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ChangeAnimation("combo1");
-                return;
-            }
-            else if (Input.GetKeyDown(KeyCode.F))
-            {
-                ChangeAnimation("combo2");
-                return;
-            }
+            if (Input.GetMouseButtonDown(0)) { ChangeAnimation("ATK1"); return; }
+            if (Input.GetKeyDown(KeyCode.Q)) { ChangeAnimation("combo1"); return; }
+            if (Input.GetKeyDown(KeyCode.F)) { ChangeAnimation("combo2"); return; }
         }
 
         if (!isRolling && !isBlocking)
@@ -150,53 +133,38 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ShowAxe()
+    void HandleMovement()
     {
-        if (isWeaponDrawn)
+        if (playerCamera == null) return;
+
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
+
+        Vector3 forward = playerCamera.transform.forward;
+        Vector3 right = playerCamera.transform.right;
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
+
+        Quaternion targetRotation = Quaternion.LookRotation(forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, ro_speed * Time.deltaTime);
+
+        Vector3 moveDirection = (forward * moveZ + right * moveX).normalized;
+
+        if (moveDirection.magnitude >= 0.1f)
         {
-            if (axeHand != null) axeHand.SetActive(true);
-            if (axeBack != null) axeBack.SetActive(false);
+            float speed = Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed;
+            if (moveZ < 0) speed = back_speed;
+
+            Vector3 targetVelocity = moveDirection * speed;
+            targetVelocity.y = playerRigid.linearVelocity.y;
+            playerRigid.linearVelocity = targetVelocity;
         }
         else
         {
-            if (axeHand != null) axeHand.SetActive(false);
-            if (axeBack != null) axeBack.SetActive(true);
-        }
-    }
-
-    void HandleMovement()
-    {
-        float h = 0f;
-        float v = 0f;
-
-        if (Input.GetKey(KeyCode.W)) v = 1f;
-        if (Input.GetKey(KeyCode.S)) v = -1f;
-        if (Input.GetKey(KeyCode.A)) h = -1f;
-        if (Input.GetKey(KeyCode.D)) h = 1f;
-
-        // 1. Xoay nhân vật bằng phím A và D
-        if (h != 0)
-        {
-            float rotation = h * ro_speed * Time.deltaTime;
-            playerTrans.Rotate(0, rotation, 0);
-        }
-
-        // 2. Di chuyển tiến/lùi theo hướng nhìn của nhân vật
-        Vector3 moveDir = playerTrans.forward * v;
-
-        if (v == 0)
-        {
-            // Nếu không nhấn W/S thì dừng lại theo trục X/Z, giữ nguyên vận tốc rơi Y
             playerRigid.linearVelocity = new Vector3(0f, playerRigid.linearVelocity.y, 0f);
-            return;
         }
-
-        // Tính toán tốc độ
-        float speed = (v < 0f) ? back_speed : (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
-
-        Vector3 moveVelocity = moveDir * speed;
-        moveVelocity.y = playerRigid.linearVelocity.y; // Giữ nguyên trọng lực
-        playerRigid.linearVelocity = moveVelocity;
     }
 
     void HandleRoll()
@@ -216,13 +184,20 @@ public class Player : MonoBehaviour
 
     void HandleAnimations()
     {
-        string newAnim = "idle";
-        if (Input.GetKey(KeyCode.W)) newAnim = Input.GetKey(KeyCode.LeftShift) ? "fastRun" : "slowRun";
-        else if (Input.GetKey(KeyCode.S)) newAnim = "goBack";
-        else if (Input.GetKey(KeyCode.A)) newAnim = "leftTurn";
-        else if (Input.GetKey(KeyCode.D)) newAnim = "rightTurn";
+        float moveSpeed = playerRigid.linearVelocity.magnitude;
+        if (moveSpeed < 0.5f) { ChangeAnimation("idle"); return; }
 
-        ChangeAnimation(newAnim);
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        if (v < -0.1f) ChangeAnimation("goBack");
+        else if (h < -0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("leftTurn");
+        else if (h > 0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("rightTurn");
+        else
+        {
+            if (Input.GetKey(KeyCode.LeftShift)) ChangeAnimation("fastRun");
+            else ChangeAnimation("slowRun");
+        }
     }
 
     void ChangeAnimation(string newAnim)
@@ -235,29 +210,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void EnableHitbox()
+    // --- HÀM NÀY ĐÃ ĐƯỢC SỬA LẠI ĐỂ ĐẢM BẢO HIỆN RÌU ---
+    public void ShowAxe()
     {
-        if (axeHitbox != null) axeHitbox.enabled = true;
+        if (axeHand == null || axeBack == null) return;
+
+        // Dùng chính trạng thái thực tế để tráo đổi cho chính xác
+        bool shouldShowInHand = isWeaponDrawn;
+
+        axeHand.SetActive(shouldShowInHand);
+        axeBack.SetActive(!shouldShowInHand);
+
+        Debug.Log($"[ShowAxe] Rút vũ khí: {shouldShowInHand}. Tay: {axeHand.activeSelf}, Lưng: {axeBack.activeSelf}");
     }
 
-    public void DisableHitbox()
-    {
-        if (axeHitbox != null) axeHitbox.enabled = false;
-    }
+    public void EnableHitbox() { if (axeHitbox != null) axeHitbox.enabled = true; }
+    public void DisableHitbox() { if (axeHitbox != null) axeHitbox.enabled = false; }
 
     void ResetAllTriggers()
     {
-        playerAnim.ResetTrigger("slowRun");
-        playerAnim.ResetTrigger("fastRun");
-        playerAnim.ResetTrigger("goBack");
-        playerAnim.ResetTrigger("leftTurn");
-        playerAnim.ResetTrigger("rightTurn");
-        playerAnim.ResetTrigger("idle");
-        playerAnim.ResetTrigger("roll");
-        playerAnim.ResetTrigger("equip");
-        playerAnim.ResetTrigger("unequip");
-        playerAnim.ResetTrigger("ATK1");
-        playerAnim.ResetTrigger("combo1");
-        playerAnim.ResetTrigger("combo2");
+        string[] trigs = { "slowRun", "fastRun", "goBack", "leftTurn", "rightTurn", "idle", "roll", "equip", "unequip", "ATK1", "combo1", "combo2" };
+        foreach (var t in trigs) playerAnim.ResetTrigger(t);
     }
 }

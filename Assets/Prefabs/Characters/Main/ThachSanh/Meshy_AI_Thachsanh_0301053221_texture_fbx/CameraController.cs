@@ -2,56 +2,49 @@
 
 public class CameraController : MonoBehaviour
 {
-    [Header("Target Settings")]
-    public Transform target; // Kéo object Player vào đây
-    public Vector3 targetOffset = new Vector3(0, 1.5f, 0); // Độ cao điểm nhìn (Ngang vai/đầu)
-    public float distance = 4.0f; // Khoảng cách từ camera đến nhân vật
+    [Header("Mục Tiêu Theo Dõi")]
+    public Transform target; // Kéo object Thạch Sanh vào đây
 
-    [Header("Camera Sensitivity")]
-    public float mouseSensitivity = 2.0f; // Tốc độ xoay chuột
-    public float minY = -20f; // Góc nhìn cúi xuống tối đa
-    public float maxY = 60f;  // Góc nhìn ngẩng lên tối đa
+    [Header("Cài Đặt Góc Nhìn")]
+    public float distance = 4f; // Khoảng cách từ cam đến nhân vật
+    public float heightOffset = 1.5f; // Chiều cao tâm điểm (ngang vai/đầu nhân vật)
 
-    private float rotationX = 0.0f;
-    private float rotationY = 0.0f;
+    [Header("Độ Nhạy Chuột")]
+    public float sensitivityX = 3f;
+    public float sensitivityY = 2f;
+
+    [Header("Giới Hạn Góc Nhìn Lên/Xuống")]
+    public float minYAngle = -15f;
+    public float maxYAngle = 60f;
+
+    private float currentX = 0f;
+    private float currentY = 20f;
 
     void Start()
     {
-        // Khóa con trỏ chuột vào giữa màn hình và làm ẩn nó đi
+        // Khóa chuột vào giữa màn hình và làm ẩn con trỏ chuột
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        // Lấy góc nhìn ban đầu của camera
-        Vector3 angles = transform.eulerAngles;
-        rotationX = angles.y;
-        rotationY = angles.x;
     }
 
-    // Dùng LateUpdate cho Camera để đảm bảo Camera di chuyển SAU KHI nhân vật đã di chuyển
-    // Giúp hình ảnh không bị giật lag (jitter)
     void LateUpdate()
     {
         if (target == null) return;
 
         // 1. Nhận tín hiệu di chuyển từ chuột
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        currentX += Input.GetAxis("Mouse X") * sensitivityX;
+        currentY -= Input.GetAxis("Mouse Y") * sensitivityY;
 
-        rotationX += mouseX;
-        rotationY -= mouseY;
+        // 2. Chặn góc xoay trục Y để camera không lật ngược qua đầu hoặc cắm hẳn xuống đất
+        currentY = Mathf.Clamp(currentY, minYAngle, maxYAngle);
 
-        // 2. Giới hạn góc nhìn Y (Lên/Xuống) để camera không bị lật ngược
-        rotationY = Mathf.Clamp(rotationY, minY, maxY);
+        // 3. Tính toán vị trí xoay quanh nhân vật
+        Vector3 direction = new Vector3(0, 0, -distance);
+        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
 
-        // 3. Tính toán góc quay mới
-        Quaternion rotation = Quaternion.Euler(rotationY, rotationX, 0);
-
-        // 4. Tính toán vị trí mới của camera sao cho luôn giữ khoảng cách với nhân vật
-        Vector3 targetPosition = target.position + targetOffset;
-        Vector3 position = targetPosition - (rotation * Vector3.forward * distance);
-
-        // 5. Áp dụng tọa độ và góc quay vào Camera
-        transform.rotation = rotation;
-        transform.position = position;
+        // 4. Áp dụng vị trí và hướng nhìn cho Camera
+        Vector3 lookPosition = target.position + Vector3.up * heightOffset;
+        transform.position = lookPosition + rotation * direction;
+        transform.LookAt(lookPosition);
     }
 }
