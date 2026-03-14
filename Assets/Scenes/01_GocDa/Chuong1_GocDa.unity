@@ -190,9 +190,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 207194975}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!222 &174987435
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3748,7 +3748,7 @@ GameObject:
   - component: {fileID: 1094148450}
   - component: {fileID: 1094148449}
   m_Layer: 0
-  m_Name: 
+  m_Name: DialogueSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3763,9 +3763,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1094148447}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1072339235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8896,7 +8896,7 @@ GameObject:
   - component: {fileID: 2050250135}
   - component: {fileID: 2050250134}
   m_Layer: 0
-  m_Name: 
+  m_Name: DialoguePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
