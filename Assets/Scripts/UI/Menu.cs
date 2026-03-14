@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI; // Dùng để can thiệp vào các nút
 using UnityEngine.EventSystems; // Dùng để can thiệp lỗi kẹt phím UI
-using ThachSanh.Systems; // Dùng để gọi LevelLoader và SaveSystem
 
 namespace ThachSanh.UI
 {
@@ -25,7 +24,6 @@ namespace ThachSanh.UI
             // LevelLoader.LoadChapter(saveData.currentLevelIndex); 
             
             // TẠM THỜI (Do chưa có ruột LoadSaveData): Load đại màn 0
-            LevelLoader.LoadChapter(0);
         }
 
         [Header("Kéo nguyên cụm nút Main Menu vào đây")]
