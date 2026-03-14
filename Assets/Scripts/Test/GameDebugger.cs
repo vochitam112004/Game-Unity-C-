@@ -2,58 +2,27 @@
 
 public class GameDebugger : MonoBehaviour
 {
-    [Header("Gắn các vật thể vào đây")]
     public Transform player;
     public Transform boss;
-    public BossBrain bossBrain;
+    public KeyCode teleportKey = KeyCode.T; // Bấm nút T để bay đến Boss
 
     void Update()
     {
-        // 1. CHỨC NĂNG DỊCH CHUYỂN (Phím T)
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(teleportKey))
         {
-            TeleportPlayerToBoss();
-        }
-
-        // 2. CHỨC NĂNG TEST TRỪ MÁU (Phím Y)
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            if (bossBrain != null)
+            if (player != null && boss != null)
             {
-                bossBrain.TakeDamage(100f);
-                Debug.Log("Đã trừ 100 máu của Boss bằng phím Y!");
+                // Vô hiệu hóa Controller tạm thời để Unity cho phép dịch chuyển tọa độ
+                CharacterController cc = player.GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false;
+
+                // Bay đến vị trí Boss (cộng thêm 2 mét để không dẫm lên đầu nhau)
+                player.position = boss.position + Vector3.forward * 2f;
+
+                if (cc != null) cc.enabled = true;
+
+                Debug.Log("Hô biến! Đã dịch chuyển Thạch Sanh đến chỗ Boss.");
             }
         }
-    }
-
-    void TeleportPlayerToBoss()
-    {
-        if (player == null || boss == null) return;
-
-        // Tính toán vị trí mới: Đứng cách mặt Boss 5 mét
-        Vector3 newPosition = boss.position + boss.forward * 5f;
-        // Đảm bảo không bị chui xuống đất
-        newPosition.y = boss.position.y;
-
-        // LƯU Ý VẬT LÝ QUAN TRỌNG: 
-        // Nếu Player của bạn dùng CharacterController, nó sẽ "chống cự" lại lệnh dịch chuyển.
-        // Ta phải tạm tắt nó đi, dịch chuyển xong rồi bật lại.
-        CharacterController cc = player.GetComponent<CharacterController>();
-        if (cc != null)
-        {
-            cc.enabled = false;
-            player.position = newPosition;
-            cc.enabled = true;
-        }
-        else
-        {
-            // Nếu dùng Rigidbody bình thường
-            player.position = newPosition;
-        }
-
-        // Ép camera của Player nhìn thẳng vào mặt Boss luôn cho ngầu
-        player.LookAt(boss.position);
-
-        Debug.Log("Đã dịch chuyển Player đến khu vực Boss!");
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using ThachSanh.Systems; // Gọi LevelLoader nếu cần
 
 namespace ThachSanh.UI
 {
@@ -141,7 +140,6 @@ namespace ThachSanh.UI
         public void MainMenuButton()
         {
             Time.timeScale = 1f; // Phải nhả pause ra trước khi đổi màn
-            LevelLoader.LoadMainMenu();
         }
     }
 }
