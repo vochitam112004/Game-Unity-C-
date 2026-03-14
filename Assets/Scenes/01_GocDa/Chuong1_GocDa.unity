@@ -3873,7 +3873,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSystem
   dialoguePanel: {fileID: 2050250132}
-  nameText: {fileID: 0}
+  nameText: {fileID: 1066441763}
   dialogueText: {fileID: 174987434}
   typingSpeed: 0.05
   autoClose: 1
