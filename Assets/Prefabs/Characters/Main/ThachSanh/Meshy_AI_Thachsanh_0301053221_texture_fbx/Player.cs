@@ -32,12 +32,20 @@ public class Player : MonoBehaviour
     [Header("Combat Settings")]
     public Collider axeHitbox;
 
+    // Camera riêng của player (child camera), không dùng Camera.main vì scene có nhiều camera
+    private Camera playerCamera;
+
     void Start()
     {
+        // Lấy camera gắn vào Player (child), ưu tiên hơn Camera.main
+        playerCamera = GetComponentInChildren<Camera>();
+        if (playerCamera == null)
+            playerCamera = Camera.main;
+
         if (axeHand != null) axeHand.SetActive(false);
         if (axeBack != null) axeBack.SetActive(true);
 
-        DisableHitbox(); // [MỚI] Đảm bảo lúc mới vào game rìu không gây sát thương
+        DisableHitbox();
     }
 
     void FixedUpdate()
@@ -158,46 +166,37 @@ public class Player : MonoBehaviour
 
     void HandleMovement()
     {
-        if (Camera.main == null) return;
+        float h = 0f;
+        float v = 0f;
 
-        // Lấy hướng camera trong world space (bỏ qua trục Y)
-        Transform cam = Camera.main.transform;
-        Vector3 camForward = new Vector3(cam.forward.x, 0f, cam.forward.z).normalized;
-        Vector3 camRight   = new Vector3(cam.right.x,   0f, cam.right.z).normalized;
-
-        // Tính hướng di chuyển theo input
-        float h = 0f, v = 0f;
-        if (Input.GetKey(KeyCode.W)) v =  1f;
+        if (Input.GetKey(KeyCode.W)) v = 1f;
         if (Input.GetKey(KeyCode.S)) v = -1f;
         if (Input.GetKey(KeyCode.A)) h = -1f;
-        if (Input.GetKey(KeyCode.D)) h =  1f;
+        if (Input.GetKey(KeyCode.D)) h = 1f;
 
-        Vector3 moveDir = (camForward * v + camRight * h);
-
-        if (moveDir.sqrMagnitude < 0.01f)
+        // 1. Xoay nhân vật bằng phím A và D
+        if (h != 0)
         {
-            // Dừng lại, giữ nguyên vận tốc Y
+            float rotation = h * ro_speed * Time.deltaTime;
+            playerTrans.Rotate(0, rotation, 0);
+        }
+
+        // 2. Di chuyển tiến/lùi theo hướng nhìn của nhân vật
+        Vector3 moveDir = playerTrans.forward * v;
+
+        if (v == 0)
+        {
+            // Nếu không nhấn W/S thì dừng lại theo trục X/Z, giữ nguyên vận tốc rơi Y
             playerRigid.linearVelocity = new Vector3(0f, playerRigid.linearVelocity.y, 0f);
             return;
         }
 
-        moveDir.Normalize();
-
-        // Tốc độ: lùi dùng back_speed, chạy dùng run_speed, còn lại walk_speed
-        float speed = (v < 0f) ? back_speed
-                    : (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
+        // Tính toán tốc độ
+        float speed = (v < 0f) ? back_speed : (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
 
         Vector3 moveVelocity = moveDir * speed;
-        moveVelocity.y = playerRigid.linearVelocity.y;
+        moveVelocity.y = playerRigid.linearVelocity.y; // Giữ nguyên trọng lực
         playerRigid.linearVelocity = moveVelocity;
-
-        // Xoay nhân vật về hướng đang đi (chỉ khi tiến, không xoay khi lùi/ngang)
-        if (v >= 0f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            playerTrans.rotation = Quaternion.Slerp(
-                playerTrans.rotation, targetRotation, ro_speed * Time.deltaTime);
-        }
     }
 
     void HandleRoll()
