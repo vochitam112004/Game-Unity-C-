@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -160,28 +160,43 @@ public class Player : MonoBehaviour
     {
         if (Camera.main == null) return;
 
-        Vector3 camForward = Camera.main.transform.forward;
-        camForward.y = 0;
-        camForward.Normalize();
+        // Lấy hướng camera trong world space (bỏ qua trục Y)
+        Transform cam = Camera.main.transform;
+        Vector3 camForward = new Vector3(cam.forward.x, 0f, cam.forward.z).normalized;
+        Vector3 camRight   = new Vector3(cam.right.x,   0f, cam.right.z).normalized;
 
-        Vector3 camRight = Camera.main.transform.right;
-        camRight.y = 0;
-        camRight.Normalize();
+        // Tính hướng di chuyển theo input
+        float h = 0f, v = 0f;
+        if (Input.GetKey(KeyCode.W)) v =  1f;
+        if (Input.GetKey(KeyCode.S)) v = -1f;
+        if (Input.GetKey(KeyCode.A)) h = -1f;
+        if (Input.GetKey(KeyCode.D)) h =  1f;
 
-        Vector3 moveVelocity = Vector3.zero;
+        Vector3 moveDir = (camForward * v + camRight * h);
 
-        if (Input.GetKey(KeyCode.W)) moveVelocity += camForward * (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
-        if (Input.GetKey(KeyCode.S)) moveVelocity -= camForward * back_speed;
-        if (Input.GetKey(KeyCode.A)) moveVelocity -= camRight * walk_speed;
-        if (Input.GetKey(KeyCode.D)) moveVelocity += camRight * walk_speed;
+        if (moveDir.sqrMagnitude < 0.01f)
+        {
+            // Dừng lại, giữ nguyên vận tốc Y
+            playerRigid.linearVelocity = new Vector3(0f, playerRigid.linearVelocity.y, 0f);
+            return;
+        }
 
+        moveDir.Normalize();
+
+        // Tốc độ: lùi dùng back_speed, chạy dùng run_speed, còn lại walk_speed
+        float speed = (v < 0f) ? back_speed
+                    : (Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed);
+
+        Vector3 moveVelocity = moveDir * speed;
         moveVelocity.y = playerRigid.linearVelocity.y;
         playerRigid.linearVelocity = moveVelocity;
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        // Xoay nhân vật về hướng đang đi (chỉ khi tiến, không xoay khi lùi/ngang)
+        if (v >= 0f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(camForward);
-            playerTrans.rotation = Quaternion.Slerp(playerTrans.rotation, targetRotation, ro_speed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            playerTrans.rotation = Quaternion.Slerp(
+                playerTrans.rotation, targetRotation, ro_speed * Time.deltaTime);
         }
     }
 
