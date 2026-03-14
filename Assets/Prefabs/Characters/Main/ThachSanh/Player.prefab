@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8275054001989055909}
   - component: {fileID: 5026307081740609890}
   - component: {fileID: 5625238993635413813}
+  - component: {fileID: 1111111111111111111}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -347,3 +348,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0658db954199d1a4884ec050c1958133, type: 3}
   m_PrefabInstance: {fileID: 1311586764030486865}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1111111111111111111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7025867823947649560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8829fc765533504ab8316947a12a731, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  playerAnim: {fileID: 0}
+  playerRigid: {fileID: 5625238993635413813}
+  playerTrans: {fileID: 5286484339296812086}
+  axeHand: {fileID: 0}
+  axeBack: {fileID: 0}
+  walk_speed: 12
+  run_speed: 18
+  back_speed: 8
+  ro_speed: 150
+  roll_speed: 15
+  rollDuration: 2
+  extraGravity: 40
+  axeHitbox: {fileID: 0}
