@@ -235,8 +235,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -403,6 +403,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!95 &184262944 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4852950340966061248, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
+  m_PrefabInstance: {fileID: 7444118451600721698}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &207194975
 GameObject:
   m_ObjectHideFlags: 0
@@ -4013,7 +4018,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2050250133}
+  m_Father: {fileID: 1398552383}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9107,7 +9112,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1094148448}
   - {fileID: 207194976}
   m_Father: {fileID: 183948964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9433,6 +9437,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.005136732
       objectReference: {fileID: 0}
+    - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
+      propertyPath: playerAnim
+      value: 
+      objectReference: {fileID: 184262944}
     - target: {fileID: 1565291463780683450, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.029003464
