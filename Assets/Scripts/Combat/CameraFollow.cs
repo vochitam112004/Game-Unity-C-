@@ -1,22 +1,49 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target; // Nhân vật Thạch Sanh
-    public Vector3 offset = new Vector3(0, 3, -5); // Chỉnh độ cao (Y) và độ xa (Z)
-    public float smoothSpeed = 15f; // Tăng lên 20-30 nếu muốn cam đi nhanh hơn
+    [Header("Mục tiêu chính (Vị trí bám theo)")]
+    public Transform target; // Nhân vật chính để Camera bám theo vị trí
+    public Vector3 offset; // Khoảng cách tương đối
+    public float smoothSpeed = 15f; 
+
+    [Header("Mục tiêu phụ (Góc nhìn)")]
+    public Transform secondaryTarget; // Nhân vật thứ 2 để xoay sang nhìn
+    public bool lookAtSecondary = false; // Tích vào để quay 180 độ sang nhìn người kia
+    
+    [Header("Cài đặt góc nhìn")]
+    public float lookAtHeight = 1.2f; // Độ cao điểm nhìn của mục tiêu chính
+    public float secondaryLookAtHeight = 1.2f; // Độ cao điểm nhìn của mục tiêu phụ
+    public bool autoCalculateOffset = true;
+
+    void Start()
+    {
+        if (target != null && autoCalculateOffset)
+        {
+            offset = target.InverseTransformDirection(transform.position - target.position);
+        }
+    }
 
     void LateUpdate()
     {
         if (target == null) return;
 
-        // Tính vị trí camera dựa trên hướng xoay của nhân vật
+        // 1. Luôn bám theo vị trí của nhân vật chính (Target)
         Vector3 desiredPosition = target.position + target.TransformDirection(offset);
-
-        // Di chuyển mượt mà
         transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
 
-        // Luôn nhìn vào Thạch Sanh
-        transform.LookAt(target.position + Vector3.up * 1.5f);
+        // 2. Xoay Camera
+        if (lookAtSecondary && secondaryTarget != null)
+        {
+            // Quay sang nhìn nhân vật phụ (Thạch Sanh)
+            Vector3 lookTarget = secondaryTarget.position + Vector3.up * secondaryLookAtHeight;
+            transform.LookAt(lookTarget);
+        }
+        else
+        {
+            // Nhìn vào nhân vật chính (Lý Thông)
+            Vector3 lookTarget = target.position + Vector3.up * lookAtHeight;
+            transform.LookAt(lookTarget);
+        }
     }
 }
