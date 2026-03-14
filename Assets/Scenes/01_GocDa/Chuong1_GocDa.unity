@@ -3834,7 +3834,7 @@ GameObject:
   - component: {fileID: 1094148448}
   - component: {fileID: 1066441763}
   m_Layer: 0
-  m_Name: DialogueManager
+  m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3851,8 +3851,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 207194976}
+  m_Children: []
   m_Father: {fileID: 2050250133}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8915,6 +8914,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1094148448}
+  - {fileID: 207194976}
   m_Father: {fileID: 183948964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
