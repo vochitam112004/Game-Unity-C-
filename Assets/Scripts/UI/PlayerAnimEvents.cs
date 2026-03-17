@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class PlayerAnimEvents : MonoBehaviour
 {
@@ -19,5 +19,17 @@ public class PlayerAnimEvents : MonoBehaviour
     public void DisableHitbox()
     {
         if (playerScript != null) playerScript.DisableHitbox();
+    }
+
+    // Sự kiện vung rìu (Chém)
+    public void PlaySwingSound()
+    {
+        if (playerScript != null) playerScript.PlaySwingSound();
+    }
+
+    // Sự kiện rút/cất vũ khí
+    public void PlayEquipSound()
+    {
+        if (playerScript != null) playerScript.PlayEquipSound();
     }
 }

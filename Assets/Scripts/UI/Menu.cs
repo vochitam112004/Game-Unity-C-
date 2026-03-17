@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI; // Dùng để can thiệp vào các nút
 using UnityEngine.EventSystems; // Dùng để can thiệp lỗi kẹt phím UI
+using UnityEngine.SceneManagement; // Dùng để chuyển Scene
 
 namespace ThachSanh.UI
 {
@@ -8,6 +9,31 @@ namespace ThachSanh.UI
     {
         [Header("Kéo bảng Settings vào đây để nút Setting mở được")]
         public GameObject settingsPanel;
+
+        [Header("Tên của Level 1 (Dành cho New Game)")]
+        [Tooltip("Nhập chính xác tên Scene của màn chơi đầu tiên vào đây")]
+        public string firstLevelSceneName = "Chuong1_GocDa";
+
+        // Gắn hàm này vào sự kiện OnClick() của nút New Game
+        public void NewGame()
+        {
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null); // Fix lỗi kẹt nút UI
+            Time.timeScale = 1f; // Đảm bảo thời gian chạy bình thường
+            
+            string sceneToLoad = firstLevelSceneName;
+            
+            // Sửa nóng: Nếu Inspector lưu giá trị Level1 cũ trước khi code update, ép nó sang màn cốt truyện
+            if (sceneToLoad == "Level1") sceneToLoad = "Chuong1_GocDa";
+
+            if (!string.IsNullOrEmpty(sceneToLoad))
+            {
+                SceneManager.LoadScene(sceneToLoad);
+            }
+            else
+            {
+                Debug.LogError("Menu.cs: Chưa nhập tên Scene của Level 1 để mở New Game!");
+            }
+        }
 
         // (Đã xóa hàm chặn nút Continue game theo yêu cầu của bạn)
 

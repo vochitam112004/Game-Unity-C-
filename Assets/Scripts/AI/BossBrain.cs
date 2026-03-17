@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
@@ -73,7 +73,17 @@ public class BossBrain : MonoBehaviour
         {
             case BossState.Idle:
                 anim.SetBool("isMoving", false);
-                if (dist < detectRange) state = BossState.Chase;
+                if (dist < detectRange) 
+                {
+                    state = BossState.Chase;
+                    // --- GỌI SCRIPT BẮT ĐẦU CHỬI NHAU KHI PHÁT HIỆN THẠCH SANH ---
+                    TalkToBoss talkScript = GetComponent<TalkToBoss>();
+                    if (talkScript != null)
+                    {
+                        talkScript.StartBossFight();
+                    }
+                    // -----------------------------------------------------------
+                }
                 break;
 
             case BossState.Chase:
@@ -163,6 +173,14 @@ public class BossBrain : MonoBehaviour
         currentHealth -= damageAmount;
         Debug.Log("Boss bị chém! Máu còn: " + currentHealth);
 
+        // --- GỌI SCRIPT CHỬI BỚI KHI BỊ CHÉM ---
+        TalkToBoss talkScript = GetComponent<TalkToBoss>();
+        if (talkScript != null)
+        {
+            talkScript.TakeHit();
+        }
+        // ----------------------------------------
+
         // --- CẬP NHẬT MỚI: TÓE MÁU KHI BOSS BỊ CHÉM TRÚNG ---
         if (bloodVFX != null)
         {
@@ -249,6 +267,14 @@ public class BossBrain : MonoBehaviour
     void Die()
     {
         Debug.Log("BOSS ĐÃ CHẾT!");
+
+        // --- GỌI SCRIPT TRĂN TRỐI KHI CHẾT ---
+        TalkToBoss talkScript = GetComponent<TalkToBoss>();
+        if (talkScript != null)
+        {
+            talkScript.Die();
+        }
+        // --------------------------------------
 
         // --- THÊM DÒNG NÀY ĐỂ TẮT THANH MÁU ---
         if (healthBarCanvas != null) healthBarCanvas.SetActive(false);

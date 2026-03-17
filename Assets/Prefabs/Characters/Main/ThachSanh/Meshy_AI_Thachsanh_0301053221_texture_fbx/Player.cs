@@ -32,12 +32,16 @@ public class Player : MonoBehaviour
     [Header("Combat Settings")]
     public Collider axeHitbox;
 
+    [Header("Audio Settings")]
+    public AudioClip[] swingSounds; // m thanh chém
+    public AudioClip equipSound;    // m thanh rút/cất vũ khí
+    private AudioSource audioSource;
+
     private Camera playerCamera;
 
     void Start()
     {
-        playerCamera = GetComponentInChildren<Camera>();
-        if (playerCamera == null) playerCamera = Camera.main;
+        playerCamera = Camera.main;
 
         // Thiết lập ban đầu: Rìu ở trên lưng
         isWeaponDrawn = false;
@@ -45,6 +49,14 @@ public class Player : MonoBehaviour
         if (axeBack != null) axeBack.SetActive(true);
 
         DisableHitbox();
+
+        // Tự động tìm hoặc thêm AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
     }
 
     void FixedUpdate()
@@ -135,6 +147,7 @@ public class Player : MonoBehaviour
 
     void HandleMovement()
     {
+        if (playerCamera == null) playerCamera = Camera.main;
         if (playerCamera == null) return;
 
         float moveX = Input.GetAxisRaw("Horizontal");
@@ -147,15 +160,24 @@ public class Player : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-        Quaternion targetRotation = Quaternion.LookRotation(forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, ro_speed * Time.deltaTime);
-
         Vector3 moveDirection = (forward * moveZ + right * moveX).normalized;
+
+        bool isCutsceneActive = DialogueSystem.Instance != null && DialogueSystem.Instance.dialoguePanel.activeSelf;
+        
+        if (!isCutsceneActive && moveDirection.magnitude >= 0.1f)
+        {
+            // Chế độ Strafe khi đang thủ rìu, Chế độ tự do khi chạy bình thường
+            Vector3 faceDirection = isBlocking ? forward : moveDirection;
+            
+            Quaternion targetRotation = Quaternion.LookRotation(faceDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, ro_speed * Time.deltaTime);
+        }
 
         if (moveDirection.magnitude >= 0.1f)
         {
             float speed = Input.GetKey(KeyCode.LeftShift) ? run_speed : walk_speed;
-            if (moveZ < 0) speed = back_speed;
+            if (isBlocking) speed = back_speed; // Giảm tốc độ khi đang giơ rìu thủ
+            if (!isBlocking && moveZ < 0) speed = walk_speed; // Không chạy nhanh lùi
 
             Vector3 targetVelocity = moveDirection * speed;
             targetVelocity.y = playerRigid.linearVelocity.y;
@@ -184,17 +206,23 @@ public class Player : MonoBehaviour
 
     void HandleAnimations()
     {
-        float moveSpeed = playerRigid.linearVelocity.magnitude;
-        if (moveSpeed < 0.5f) { ChangeAnimation("idle"); return; }
+        Vector3 inputDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (inputDir.magnitude < 0.1f) { ChangeAnimation("idle"); return; }
 
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        if (isBlocking)
+        {
+            // Strafe animations khi đang cầm vũ khí chống đỡ
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
 
-        if (v < -0.1f) ChangeAnimation("goBack");
-        else if (h < -0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("leftTurn");
-        else if (h > 0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("rightTurn");
+            if (v < -0.1f) ChangeAnimation("goBack");
+            else if (h < -0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("leftTurn");
+            else if (h > 0.1f && Mathf.Abs(v) < 0.5f) ChangeAnimation("rightTurn");
+            else ChangeAnimation("slowRun");
+        }
         else
         {
+            // Chạy tự do bình thường
             if (Input.GetKey(KeyCode.LeftShift)) ChangeAnimation("fastRun");
             else ChangeAnimation("slowRun");
         }
@@ -231,5 +259,23 @@ public class Player : MonoBehaviour
     {
         string[] trigs = { "slowRun", "fastRun", "goBack", "leftTurn", "rightTurn", "idle", "roll", "equip", "unequip", "ATK1", "combo1", "combo2" };
         foreach (var t in trigs) playerAnim.ResetTrigger(t);
+    }
+
+    // --- CÁC HÀM PHÁT M THANH CHO ANIMATION EVENT ---
+    public void PlaySwingSound()
+    {
+        if (audioSource != null && swingSounds != null && swingSounds.Length > 0)
+        {
+            AudioClip clip = swingSounds[Random.Range(0, swingSounds.Length)];
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    public void PlayEquipSound()
+    {
+        if (audioSource != null && equipSound != null)
+        {
+            audioSource.PlayOneShot(equipSound);
+        }
     }
 }

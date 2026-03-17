@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -118,6 +118,14 @@ public class WolfController : MonoBehaviour
             agent.isStopped = false;
             agent.SetDestination(player.position);
         }
+
+        // --- GỌI SCRIPT BẮT ĐẦU CHỬI NHAU KHI PHÁT HIỆN THẠCH SANH ---
+        TalkToBoss talkScript = GetComponent<TalkToBoss>();
+        if (talkScript != null)
+        {
+            talkScript.StartBossFight();
+        }
+        // -----------------------------------------------------------
     }
 
     void StopAndAttack()
@@ -148,13 +156,20 @@ public class WolfController : MonoBehaviour
         return navHit.position;
     }
 
-    // --- LOGIC MÁU VÀ UI ---
     public void TakeDamage(int damage = 1)
     {
         if (isDead) return;
 
         currentHealth -= damage;
         UpdateHealthUI();
+
+        // --- GỌI SCRIPT CHỬI BỚI KHI BỊ CHÉM ---
+        TalkToBoss talkScript = GetComponent<TalkToBoss>();
+        if (talkScript != null)
+        {
+            talkScript.TakeHit();
+        }
+        // ----------------------------------------
 
         if (currentHealth <= 0) Die();
     }
@@ -185,6 +200,15 @@ public class WolfController : MonoBehaviour
     void Die()
     {
         isDead = true;
+
+        // --- GỌI SCRIPT TRĂN TRỐI KHI CHẾT ---
+        TalkToBoss talkScript = GetComponent<TalkToBoss>();
+        if (talkScript != null)
+        {
+            talkScript.Die();
+        }
+        // --------------------------------------
+
         anim.SetTrigger("Die");
         if (agent != null) agent.isStopped = true;
         if (uiCanvas != null) uiCanvas.SetActive(false);

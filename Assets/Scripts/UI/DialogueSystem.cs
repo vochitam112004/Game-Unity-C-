@@ -18,6 +18,8 @@ public struct DialogueLine
     public string animationTrigger;
     [Tooltip("Tick vào đây = Điểm kết thúc: từ câu này trở đi, camera tắt và player được đi lại tự do nhưng thoại vẫn tiếp tục")]
     public bool isStopPoint;
+    [Tooltip("Giọng lồng tiếng cho câu này (Có thể để trống)")]
+    public AudioClip voiceClip;
 }
 
 public class DialogueSystem : MonoBehaviour
@@ -45,6 +47,9 @@ public class DialogueSystem : MonoBehaviour
     private string currentSentence = ""; // Câu thoại hiện tại đang chạy
     private float currentDuration = 0f; // Thời gian chờ cho câu hiện tại
     private float autoCloseTimer = -1f; // Bộ đếm ngược tự đóng (-1 là không chạy)
+    
+    // Nguồn phát âm thanh lồng tiếng
+    private AudioSource audioSource;
 
     private void Awake()
     {
@@ -61,6 +66,14 @@ public class DialogueSystem : MonoBehaviour
         sentences = new Queue<DialogueLine>();
         // Ẩn panel lúc mới vào game
         if(dialoguePanel != null) dialoguePanel.SetActive(false); 
+        
+        // Cố gắng lấy hoặc thêm sẵn AudioSource để phát giọng nói
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
     }
 
     private void Update()
@@ -162,8 +175,19 @@ public class DialogueSystem : MonoBehaviour
         currentSentence = currentLine.sentence;
         currentDuration = currentLine.duration;
 
-        // Phát sự kiện để các script khác (như TalkToLyThong) biết mà đổi góc cam
+        // Phát sự kiện để các script khác (như TalkToNPC) biết mà đổi góc cam
         OnLineStarted?.Invoke(currentLine);
+
+        // Phát giọng lồng tiếng nếu có
+        if (audioSource != null)
+        {
+            audioSource.Stop(); // Ngừng câu nói cũ
+            if (currentLine.voiceClip != null)
+            {
+                audioSource.clip = currentLine.voiceClip;
+                audioSource.Play();
+            }
+        }
 
         // Cập nhật tên người nói lên UI
         if (nameText != null)

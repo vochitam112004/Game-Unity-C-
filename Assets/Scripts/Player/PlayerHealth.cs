@@ -33,6 +33,24 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void FullHeal()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
+
+        if (playerScript != null)
+        {
+            playerScript.enabled = true;
+        }
+
+        Debug.Log("💖 Thạch Sanh đã được hồi đầy máu!");
+    }
+
     public void TakeDamage(int damage)
     {
         if (isDead) return;
