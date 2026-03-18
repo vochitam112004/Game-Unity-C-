@@ -73,7 +73,26 @@ public class Player : MonoBehaviour
             }
             else
             {
+                // Dừng di chuyển khi đang act (đánh, rút vũ khí...)
                 playerRigid.linearVelocity = new Vector3(0, playerRigid.linearVelocity.y, 0);
+
+                // THÊM MỚI: Khóa nhân vật hướng về phía trước camera khi đang tấn công
+                if (currentAnim == "ATK1" || currentAnim == "combo1" || currentAnim == "combo2")
+                {
+                    if (playerCamera != null)
+                    {
+                        Vector3 camForward = playerCamera.transform.forward;
+                        camForward.y = 0f; // QUAN TRỌNG: Đưa Y về 0 để không bị lỗi nghiêng nhân vật / khóa chiều cao camera
+                        camForward.Normalize();
+
+                        if (camForward != Vector3.zero)
+                        {
+                            // Xoay mượt về phía trước mặt
+                            Quaternion targetRotation = Quaternion.LookRotation(camForward);
+                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, ro_speed * Time.deltaTime);
+                        }
+                    }
+                }
             }
             return;
         }
@@ -163,12 +182,11 @@ public class Player : MonoBehaviour
         Vector3 moveDirection = (forward * moveZ + right * moveX).normalized;
 
         bool isCutsceneActive = DialogueSystem.Instance != null && DialogueSystem.Instance.dialoguePanel.activeSelf;
-        
         if (!isCutsceneActive && moveDirection.magnitude >= 0.1f)
         {
             // Chế độ Strafe khi đang thủ rìu, Chế độ tự do khi chạy bình thường
             Vector3 faceDirection = isBlocking ? forward : moveDirection;
-            
+
             Quaternion targetRotation = Quaternion.LookRotation(faceDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, ro_speed * Time.deltaTime);
         }
@@ -248,7 +266,6 @@ public class Player : MonoBehaviour
 
         axeHand.SetActive(shouldShowInHand);
         axeBack.SetActive(!shouldShowInHand);
-
         Debug.Log($"[ShowAxe] Rút vũ khí: {shouldShowInHand}. Tay: {axeHand.activeSelf}, Lưng: {axeBack.activeSelf}");
     }
 
