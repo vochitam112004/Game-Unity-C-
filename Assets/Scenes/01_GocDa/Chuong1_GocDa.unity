@@ -1685,6 +1685,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 146281183362743499, guid: 962b3bc8cfb64ac4cbdf99003a38ce22, type: 3}
   m_PrefabInstance: {fileID: 764953532}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &765187966
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765187969}
+  - component: {fileID: 765187968}
+  - component: {fileID: 765187967}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &765187967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765187966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 6f3423b041793e2499deaec7e9d073e3, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &765187968
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765187966}
+  m_CullTransparentMesh: 1
+--- !u!224 &765187969
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765187966}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 819681921}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &778004599 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 670017486046406257, guid: 962b3bc8cfb64ac4cbdf99003a38ce22, type: 3}
@@ -1965,6 +2040,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 765187969}
   - {fileID: 1388605737}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5410,6 +5486,91 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 41216083135bc4a42996a7cfeb46c97a, type: 3}
   m_PrefabInstance: {fileID: 778220155}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1093700147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1093700150}
+  - component: {fileID: 1093700149}
+  - component: {fileID: 1093700148}
+  m_Layer: 0
+  m_Name: Flower
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1093700148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093700147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970df5a1d2a69814b9c25fe4c6514081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThachSanh.World.GameWinTrigger
+  victoryDialogues:
+  - name: Thach Sanh
+    sentence: "D\u1ECDn s\u1EA1ch y\xEAu qu\xE1i, ng\u1EAFm nh\xECn hoa r\u01A1i,
+      th\u1EADt l\xE0 thanh th\u1EA3n..."
+    duration: 0
+    customCamera: {fileID: 0}
+    animationTrigger: 
+    isStopPoint: 0
+    voiceClip: {fileID: 8300000, guid: 1781cad27c60ae0408184c4c9c09c19b, type: 3}
+  - name: Thach Sanh
+    sentence: "Nh\u01B0ng, b\u1EA5t c\u1EE9 n\u01A1i n\xE0o c\xF2n c\xE1i \xE1c,
+      ta s\u1EBD c\xF2n b\u01B0\u1EDBc ti\u1EBFp!"
+    duration: 0
+    customCamera: {fileID: 765187966}
+    animationTrigger: 
+    isStopPoint: 0
+    voiceClip: {fileID: 8300000, guid: 904223900c0add141a4b34fd218a89fd, type: 3}
+  winPanel: {fileID: 0}
+  mainMenuSceneName: UI
+--- !u!65 &1093700149
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093700147}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1093700150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093700147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 192.5, y: -11.5, z: 220.5}
+  m_LocalScale: {x: 100, y: 50, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1094148449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13804,7 +13965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5286484339296812086, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 180
+      value: 122.5
       objectReference: {fileID: 0}
     - target: {fileID: 5286484339296812086, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -13812,7 +13973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5286484339296812086, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 526.4
+      value: 239.4
       objectReference: {fileID: 0}
     - target: {fileID: 5317876308000602382, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14573,3 +14734,4 @@ SceneRoots:
   - {fileID: 25325355}
   - {fileID: 819681921}
   - {fileID: 848500438}
+  - {fileID: 1093700150}
