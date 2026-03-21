@@ -8,11 +8,9 @@ public class CutsceneManager : MonoBehaviour
     public PlayableDirector director;
 
     [Header("Character Dialogues")]
-    public string thachSanhName = "Thạch Sanh";
     [TextArea(2, 5)]
     public string[] thachSanhLines;
 
-    public string lyThongName = "Lý Thông";
     [TextArea(2, 5)]
     public string[] lyThongLines;
 
@@ -31,7 +29,7 @@ public class CutsceneManager : MonoBehaviour
     {
         if (DialogueSystem.Instance != null && thachSanhLines.Length > 0)
         {
-            DialogueSystem.Instance.StartDialogue(thachSanhName, thachSanhLines);
+            DialogueSystem.Instance.StartDialogue(thachSanhLines);
             PauseCutscene();
         }
     }
@@ -41,7 +39,7 @@ public class CutsceneManager : MonoBehaviour
     {
         if (DialogueSystem.Instance != null && lyThongLines.Length > 0)
         {
-            DialogueSystem.Instance.StartDialogue(lyThongName, lyThongLines);
+            DialogueSystem.Instance.StartDialogue(lyThongLines);
             PauseCutscene();
         }
     }

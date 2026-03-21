@@ -10,9 +10,16 @@ namespace ThachSanh.UI
         [Header("Kéo bảng Settings vào đây để nút Setting mở được")]
         public GameObject settingsPanel;
 
-        [Header("Tên của Level 1 (Dành cho New Game)")]
-        [Tooltip("Nhập chính xác tên Scene của màn chơi đầu tiên vào đây")]
-        public string firstLevelSceneName = "Chuong1_GocDa";
+        [Header("Tên scene Cốt Truyện (Dành cho New Game)")]
+        [Tooltip("Mảnh ghép đầu tiên của game là Intro (chứa 4 ảnh slide)")]
+        public string firstLevelSceneName = "IntroScene";
+
+        private void Start()
+        {
+            // Bật lại con trỏ chuột phòng trường hợp người chơi vừa thoát ra từ màn chơi
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
 
         // Gắn hàm này vào sự kiện OnClick() của nút New Game
         public void NewGame()
@@ -22,8 +29,9 @@ namespace ThachSanh.UI
             
             string sceneToLoad = firstLevelSceneName;
             
-            // Sửa nóng: Nếu Inspector lưu giá trị Level1 cũ trước khi code update, ép nó sang màn cốt truyện
-            if (sceneToLoad == "Level1") sceneToLoad = "Chuong1_GocDa";
+            // Ép buộc chuyển qua màn IntroScene nếu trong Inspector vẫn lưu tên cũ
+            if (sceneToLoad == "Level1" || sceneToLoad == "Chuong1_GocDa") 
+                sceneToLoad = "IntroScene";
 
             if (!string.IsNullOrEmpty(sceneToLoad))
             {
@@ -31,7 +39,7 @@ namespace ThachSanh.UI
             }
             else
             {
-                Debug.LogError("Menu.cs: Chưa nhập tên Scene của Level 1 để mở New Game!");
+                Debug.LogError("Menu.cs: Chưa nhập tên Scene Intro để mở New Game!");
             }
         }
 

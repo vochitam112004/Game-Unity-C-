@@ -7,7 +7,6 @@ using TMPro; // Sử dụng TextMeshPro cho UI Text đẹp hơn
 [System.Serializable]
 public struct DialogueLine
 {
-    public string name;
     [TextArea(3, 10)]
     public string sentence;
     [Tooltip("Thời gian chờ sau khi gõ xong. Để 0 để dùng mặc định.")]
@@ -33,7 +32,6 @@ public class DialogueSystem : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject dialoguePanel; // Panel chứa toàn bộ hộp thoại
-    public TextMeshProUGUI nameText; // Text hiển thị tên người nói
     public TextMeshProUGUI dialogueText; // Text hiển thị nội dung thoại
 
     [Header("Settings")]
@@ -100,7 +98,7 @@ public class DialogueSystem : MonoBehaviour
     }
 
     // Cách 1: Bắt đầu thoại với 1 người duy nhất (Tương thích với các script cũ)
-    public void StartDialogue(string npcName, string[] newSentences)
+    public void StartDialogue(string[] newSentences)
     {
         if (dialoguePanel == null)
         {
@@ -113,7 +111,7 @@ public class DialogueSystem : MonoBehaviour
         sentences.Clear();
         foreach (string sentence in newSentences)
         {
-            sentences.Enqueue(new DialogueLine { name = npcName, sentence = sentence, duration = 0 });
+            sentences.Enqueue(new DialogueLine { sentence = sentence, duration = 0 });
         }
 
         DisplayNextSentence();
@@ -159,7 +157,23 @@ public class DialogueSystem : MonoBehaviour
             isTyping = false;
             
             // Hiện xong câu rồi thì bắt đầu đếm ngược để tắt/chuyển câu
-            autoCloseTimer = currentDuration > 0 ? currentDuration : displayDuration;
+            if (audioSource != null && audioSource.clip != null)
+            {
+                if (audioSource.isPlaying)
+                {
+                    autoCloseTimer = (audioSource.clip.length - audioSource.time) + 0.2f;
+                }
+                else
+                {
+                    autoCloseTimer = 0.5f;
+                }
+                
+                if (currentDuration > 0) autoCloseTimer = currentDuration;
+            }
+            else
+            {
+                autoCloseTimer = currentDuration > 0 ? currentDuration : displayDuration;
+            }
             return;
         }
 
@@ -187,14 +201,12 @@ public class DialogueSystem : MonoBehaviour
                 audioSource.clip = currentLine.voiceClip;
                 audioSource.Play();
             }
+            else
+            {
+                audioSource.clip = null; // Cần thêm dòng này để clear clip cũ
+            }
         }
 
-        // Cập nhật tên người nói lên UI
-        if (nameText != null)
-        {
-            nameText.text = currentLine.name;
-        }
-        
         // Dừng chữ đang chạy (nếu có) và bắt đầu chạy chữ câu mới
         StopAllCoroutines();
         StartCoroutine(TypeSentence(currentSentence));
@@ -214,8 +226,26 @@ public class DialogueSystem : MonoBehaviour
         
         isTyping = false;
 
-        // Gõ xong hết chữ rồi thì bắt đầu đếm ngược để tự đóng bảng
-        autoCloseTimer = currentDuration > 0 ? currentDuration : displayDuration;
+        // Gõ xong hết chữ rồi thì bắt đầu đếm ngược để tự đóng bảng/chuyển câu
+        if (audioSource != null && audioSource.clip != null)
+        {
+            if (audioSource.isPlaying)
+            {
+                // Nếu âm thanh vẫn đang phát, chờ tới khi nó phát xong (cộng thêm 0.2s cho đỡ gắt)
+                autoCloseTimer = (audioSource.clip.length - audioSource.time) + 0.2f;
+            }
+            else
+            {
+                // Âm thanh đã phát xong trước cả khi gõ chữ xong -> Đợi 0.5s rồi chuyển qua câu tiếp
+                autoCloseTimer = 0.5f;
+            }
+
+            if (currentDuration > 0) autoCloseTimer = currentDuration;
+        }
+        else
+        {
+            autoCloseTimer = currentDuration > 0 ? currentDuration : displayDuration;
+        }
     }
 
     public void EndDialogue()

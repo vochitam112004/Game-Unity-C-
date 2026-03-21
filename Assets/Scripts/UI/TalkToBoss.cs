@@ -58,13 +58,6 @@ public class TalkToBoss : MonoBehaviour
 
         if (tauntDialogues.Length > 0 && DialogueSystem.Instance != null && !isDead)
         {
-            // Điền tên Boss mặc định nếu bị trống
-            for(int i = 0; i < tauntDialogues.Length; i++) 
-            {
-                if (string.IsNullOrEmpty(tauntDialogues[i].name)) 
-                    tauntDialogues[i].name = bossName;
-            }
-
             // Lưu lại thiết lập cũ
             savedAutoClose = DialogueSystem.Instance.autoClose;
             savedDisplayDuration = DialogueSystem.Instance.displayDuration;
@@ -101,13 +94,6 @@ public class TalkToBoss : MonoBehaviour
 
         if (deathDialogues.Length > 0 && DialogueSystem.Instance != null)
         {
-            // Điền tên Boss mặc định nếu bị trống
-            for(int i = 0; i < deathDialogues.Length; i++) 
-            {
-                if (string.IsNullOrEmpty(deathDialogues[i].name)) 
-                    deathDialogues[i].name = bossName;
-            }
-
             savedAutoClose = DialogueSystem.Instance.autoClose;
             savedDisplayDuration = DialogueSystem.Instance.displayDuration;
 
@@ -163,7 +149,6 @@ public class TalkToBoss : MonoBehaviour
         DialogueSystem.Instance.autoClose = true;
         DialogueSystem.Instance.displayDuration = (overrideDuration > 0) ? overrideDuration : displayDuration;
 
-        line.name = bossName;
         DialogueLine[] singleLine = new DialogueLine[] { line };
         DialogueSystem.Instance.StartDialogueWithLines(singleLine);
 

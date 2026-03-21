@@ -5,10 +5,6 @@ using System.Linq;
 
 public class TalkToNPC : MonoBehaviour
 {
-    [Header("Thông tin NPC")]
-    [Tooltip("Tên của NPC sẽ hiển thị trên bảng thoại")]
-    public string npcName = "Lý Thông";
-
     [Header("Cài đặt khoảng cách")]
     [Tooltip("Khoảng cách sát gần để hiện nút E và xem phim")]
     public float interactDistance = 3f;
@@ -129,7 +125,6 @@ public class TalkToNPC : MonoBehaviour
         foreach(var line in cutsceneDialogues)
         {
             var modifiedLine = line;
-            if (string.IsNullOrEmpty(modifiedLine.name)) modifiedLine.name = npcName;
 
             if (!foundStopPoint)
             {
