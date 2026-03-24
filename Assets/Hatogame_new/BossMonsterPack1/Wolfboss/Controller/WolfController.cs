@@ -32,6 +32,7 @@ public class WolfController : MonoBehaviour
 
     [Header("Cấu hình chiến đấu")]
     public Collider attackHitbox;
+    public AudioClip dieSound; // m thanh khi quái chết
 
     void Start()
     {
@@ -200,6 +201,12 @@ public class WolfController : MonoBehaviour
     void Die()
     {
         isDead = true;
+
+        if (dieSound != null)
+        {
+            // PlayClipAtPoint giúp tạo sound độc lập, không bị cắt đứt khi object bị Destroy
+            AudioSource.PlayClipAtPoint(dieSound, transform.position);
+        }
 
         // --- GỌI SCRIPT TRĂN TRỐI KHI CHẾT ---
         TalkToBoss talkScript = GetComponent<TalkToBoss>();

@@ -8,7 +8,10 @@ public class PlayerAnimEvents : MonoBehaviour
     // Các hàm này sẽ đón lệnh từ Animator và gửi thẳng ra cho script Player ở ngoài
     public void ShowAxe()
     {
-        if (playerScript != null) playerScript.ShowAxe();
+        if (playerScript != null) 
+            playerScript.ShowAxe();
+        else 
+            Debug.LogError("[PlayerAnimEvents] Không tìm thấy playerScript! Hãy kéo Player (Cha) vào ô trong Inspector.");
     }
 
     public void EnableHitbox()
@@ -21,15 +24,19 @@ public class PlayerAnimEvents : MonoBehaviour
         if (playerScript != null) playerScript.DisableHitbox();
     }
 
-    // Sự kiện vung rìu (Chém)
     public void PlaySwingSound()
     {
-        if (playerScript != null) playerScript.PlaySwingSound();
+        if (playerScript != null) 
+            playerScript.PlaySwingSound();
+        else 
+            Debug.LogError("[PlayerAnimEvents] Lỗi: playerScript bị NULL! Chưa kéo Player vào PlayerAnimEvents.");
     }
 
-    // Sự kiện rút/cất vũ khí
     public void PlayEquipSound()
     {
-        if (playerScript != null) playerScript.PlayEquipSound();
+        if (playerScript != null) 
+            playerScript.PlayEquipSound();
+        else 
+            Debug.LogError("[PlayerAnimEvents] Lỗi: playerScript bị NULL! Chưa kéo Player vào PlayerAnimEvents.");
     }
 }

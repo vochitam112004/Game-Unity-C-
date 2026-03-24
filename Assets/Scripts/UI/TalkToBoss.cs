@@ -14,8 +14,6 @@ public class TalkToBoss : MonoBehaviour
     [Header("2. Thoại khi bị trúng đòn")]
     [Tooltip("Các câu chửi bới khi bị chém trúng")]
     public DialogueLine[] hurtDialogues;
-    [Tooltip("Tỉ lệ % lảm nhảm mỗi khi ăn đòn (để tránh ăn đòn liên tục nói nhiều quá), vd: 0.5 là 50%")]
-    [Range(0f, 1f)] public float hurtTalkChance = 0.5f;
 
     [Header("3. Thoại lúc gục ngã (Chết)")]
     [Tooltip("Câu trăn trối cuối cùng")]
@@ -31,6 +29,11 @@ public class TalkToBoss : MonoBehaviour
     // Lưu trữ thông số cũ để dọn dẹp sau khi nói
     private float savedDisplayDuration;
     private bool savedAutoClose;
+
+    // --- QUẢN LÝ NHẠC NỀN (BGM) ---
+    private static int activeCombatants = 0;
+    private static AudioSource bgmSource;
+    // --------------------------------
 
     [Header("Sự kiện kết thúc")]
     [Tooltip("Kéo thả code của Lý Thông (TalkToNPC -> PlayPostFightDialogues) vào đây để tự động nối tiếp thoại sau khi Boss chết")]
@@ -50,11 +53,40 @@ public class TalkToBoss : MonoBehaviour
     // CÁC HÀM CỔNG: ĐỂ SCRIPT MÁU/ĐÁNH GỌI VÀO
     // ==========================================
 
+    private AudioSource FindBGMAudioSource()
+    {
+        // 1. Tìm GameObject theo các tên phổ biến để tránh nhận diện sai SFX khác
+        string[] bgmNames = { "BGM", "BackgroundMusic", "Music", "Background_Music", "NhacNen" };
+        foreach (string name in bgmNames)
+        {
+            GameObject bgmObj = GameObject.Find(name);
+            if (bgmObj != null)
+            {
+                AudioSource src = bgmObj.GetComponent<AudioSource>();
+                if (src != null) return src;
+            }
+        }
+        return null; // Không đoán bừa tránh tắt nhầm tiếng quái/vũ khí
+    }
+
     // Gọi hàm này khi bắt đầu bước vào khu vực Boss
     public void StartBossFight()
     {
         if (isFighting) return; // Đảm bảo chỉ gọi 1 lần lúc mới gặp
         isFighting = true;
+
+        // --- QUẢN LÝ NHẠC NỀN ---
+        if (bgmSource == null) bgmSource = FindBGMAudioSource();
+        if (bgmSource != null)
+        {
+            if (activeCombatants == 0)
+            {
+                bgmSource.Stop();
+                Debug.Log("<color=cyan>[BGM] Đã DỪNG nhạc nền vì có quái/boss tấn công!</color>");
+            }
+            activeCombatants++;
+        }
+        // ------------------------
 
         if (tauntDialogues.Length > 0 && DialogueSystem.Instance != null && !isDead)
         {
@@ -77,8 +109,7 @@ public class TalkToBoss : MonoBehaviour
     {
         if (isDead) return;
 
-        // Bốc thăm xác suất xem có thèm kêu đau không
-        if (Random.value <= hurtTalkChance && hurtDialogues.Length > 0)
+        if (hurtDialogues.Length > 0)
         {
             DialogueLine line = hurtDialogues[Random.Range(0, hurtDialogues.Length)];
             ForceSpeak(line);
@@ -90,7 +121,24 @@ public class TalkToBoss : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
-        isFighting = false;
+
+        // --- QUẢN LÝ NHẠC NỀN ---
+        if (isFighting)
+        {
+            activeCombatants = Mathf.Max(0, activeCombatants - 1);
+            isFighting = false;
+
+            if (activeCombatants == 0 && bgmSource != null)
+            {
+                bgmSource.Play();
+                Debug.Log("<color=cyan>[BGM] PHÁT LẠI nhạc nền vì hết quái/boss!</color>");
+            }
+        }
+        else
+        {
+            isFighting = false;
+        }
+        // ------------------------
 
         if (deathDialogues.Length > 0 && DialogueSystem.Instance != null)
         {

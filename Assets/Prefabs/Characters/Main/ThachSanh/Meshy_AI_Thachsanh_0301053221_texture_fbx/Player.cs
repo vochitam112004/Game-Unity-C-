@@ -35,6 +35,12 @@ public class Player : MonoBehaviour
     [Header("Audio Settings")]
     public AudioClip[] swingSounds; // m thanh chém
     public AudioClip equipSound;    // m thanh rút/cất vũ khí
+    public AudioClip footstepSound; // [MỚI] m thanh bước chân (Chỉ cần 1 file)
+    public float walkStepDelay = 0.5f; // [MỚI] Tần suất bước đi bộ
+    public float runStepDelay = 0.35f; // [MỚI] Tần suất bước chạy
+    public AudioClip rollSound;        // [MỚI] m thanh khi lăn cuộn người
+    [Range(0f, 1f)] public float rollVolume = 0.5f; // [MỚI] m lượng tiếng lăn
+    private float stepTimer = 0f;      // [MỚI] Bộ đếm thời gian
     private AudioSource audioSource;
 
     private Camera playerCamera;
@@ -50,12 +56,38 @@ public class Player : MonoBehaviour
 
         DisableHitbox();
 
+        // FALLBACK: Tự động gán playerAnim nếu đang trống
+        if (playerAnim == null)
+        {
+            playerAnim = GetComponentInChildren<Animator>();
+            if (playerAnim != null)
+            {
+                Debug.Log("[Player] Đã tự động tìm và gán playerAnim từ object con: " + playerAnim.gameObject.name);
+            }
+        }
+
         // Tự động tìm hoặc thêm AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
+        }
+        else
+        {
+            // Bảo vệ: Ép buộc 2D Sound để không bị đè âm thanh 3D cách xa
+            audioSource.spatialBlend = 0f;
+        }
+
+        // Tự động thêm PlayerAnimEvents vào object chứa Animator để nhận Animation Event
+        if (playerAnim != null)
+        {
+            PlayerAnimEvents animEvents = playerAnim.GetComponent<PlayerAnimEvents>();
+            if (animEvents == null)
+            {
+                animEvents = playerAnim.gameObject.AddComponent<PlayerAnimEvents>();
+            }
+            animEvents.playerScript = this;
         }
     }
 
@@ -113,12 +145,14 @@ public class Player : MonoBehaviour
             {
                 if (stateInfo.normalizedTime >= 0.85f)
                 {
+                    Debug.Log($"[Player] Kết thúc hành động: {currentAnim} (Xong animation)");
                     currentAnim = "idle";
                     DisableHitbox();
                 }
             }
             else if (!playerAnim.IsInTransition(0) && stateInfo.IsName("idle"))
             {
+                Debug.Log($"[Player] Trả về idle sớm vì Animator phát idle thay vì {currentAnim}. Thường do Trigger bị trượt.");
                 currentAnim = "idle";
                 DisableHitbox();
             }
@@ -145,7 +179,7 @@ public class Player : MonoBehaviour
 
         if (isWeaponDrawn && !isRolling && !isBlocking)
         {
-            if (Input.GetMouseButtonDown(0)) { ChangeAnimation("ATK1"); return; }
+            if (Input.GetMouseButtonDown(0)) { Debug.Log("[Player] CLICK TẤN CÔNG (Chuột trái)"); ChangeAnimation("ATK1"); return; }
             if (Input.GetKeyDown(KeyCode.Q)) { ChangeAnimation("combo1"); return; }
             if (Input.GetKeyDown(KeyCode.F)) { ChangeAnimation("combo2"); return; }
         }
@@ -154,6 +188,8 @@ public class Player : MonoBehaviour
         {
             HandleAnimations();
         }
+
+        HandleFootsteps(); // [MỚI] Tính toán bước chân mỗi frame
     }
 
     void LateUpdate()
@@ -219,6 +255,12 @@ public class Player : MonoBehaviour
             isRolling = true;
             rollTimer = rollDuration;
             ChangeAnimation("roll");
+
+            // --- PHÁT TIẾNG LĂN ---
+            if (rollSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(rollSound, rollVolume); 
+            }
         }
     }
 
@@ -250,6 +292,7 @@ public class Player : MonoBehaviour
     {
         if (currentAnim != newAnim)
         {
+            Debug.Log($"[Player] ChangeAnimation: {currentAnim} -> {newAnim}");
             ResetAllTriggers();
             playerAnim.SetTrigger(newAnim);
             currentAnim = newAnim;
@@ -278,21 +321,84 @@ public class Player : MonoBehaviour
         foreach (var t in trigs) playerAnim.ResetTrigger(t);
     }
 
+    // --- CÁC HÀM PHÁT M THANH CHO BƯỚC CHÂN ---
+    void HandleFootsteps()
+    {
+        if (isRolling || isActing || playerRigid == null) return;
+
+        // 1. Dùng phím bấm Input thay vì Vận tốc để tránh lỗi trễ và giật cục nhịp chân
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
+        bool isInputMoving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveZ) > 0.1f;
+
+        if (isInputMoving)
+        {
+            bool isRunning = Input.GetKey(KeyCode.LeftShift);
+            float delay = isRunning ? runStepDelay : walkStepDelay;
+
+            stepTimer += Time.deltaTime;
+            if (stepTimer >= delay)
+            {
+                PlayFootstepSound();
+                stepTimer = 0f; // Reset đếm sau mỗi nhịp
+            }
+        }
+        else
+        {
+            // 2. Mẹo: Khi đứng im ép timer lên mức cao để vừa bấm nút là PHÁT SOUND NGAY LẬP TỨC
+            stepTimer = 10f; 
+        }
+    }
+
+    void PlayFootstepSound()
+    {
+        if (audioSource != null && footstepSound != null)
+        {
+            audioSource.PlayOneShot(footstepSound, 0.6f); 
+        }
+    }
+
     // --- CÁC HÀM PHÁT M THANH CHO ANIMATION EVENT ---
     public void PlaySwingSound()
     {
-        if (audioSource != null && swingSounds != null && swingSounds.Length > 0)
+        Debug.Log("[Player] PlaySwingSound được gọi từ Animation Event!");
+        if (audioSource == null) 
         {
-            AudioClip clip = swingSounds[Random.Range(0, swingSounds.Length)];
+            Debug.LogError("[Player] audioSource bị NULL! Không thể phát tiếng chém.");
+            return;
+        }
+        if (swingSounds == null || swingSounds.Length == 0)
+        {
+            Debug.LogWarning("[Player] swingSounds trống! Hãy kéo âm thanh chém vào mảng swingSounds trên Inspector.");
+            return;
+        }
+        
+        AudioClip clip = swingSounds[Random.Range(0, swingSounds.Length)];
+        if (clip != null)
+        {
             audioSource.PlayOneShot(clip);
+            Debug.Log("[Player] Đang phát âm thanh chém: " + clip.name + " trên AudioSource: " + audioSource.gameObject.name);
+        }
+        else
+        {
+            Debug.LogWarning("[Player] clip được chọn bị NULL!");
         }
     }
 
     public void PlayEquipSound()
     {
-        if (audioSource != null && equipSound != null)
+        if (audioSource == null)
         {
-            audioSource.PlayOneShot(equipSound);
+            Debug.LogError("[Player] audioSource bị NULL! Không thể phát tiếng rút/cất vũ khí.");
+            return;
         }
+        if (equipSound == null)
+        {
+            Debug.LogWarning("[Player] equipSound bị NULL! Hãy kéo file âm thanh vào ô equipSound trên Inspector.");
+            return;
+        }
+        
+        audioSource.PlayOneShot(equipSound);
+        Debug.Log("[Player] Đang phát âm thanh trang bị: " + equipSound.name);
     }
 }

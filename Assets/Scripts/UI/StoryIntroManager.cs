@@ -157,18 +157,7 @@ public class StoryIntroManager : MonoBehaviour
     // Nút Bỏ qua này giờ sẽ hoạt động như "Chuyển sang ảnh/đoạn thoại tiếp theo"
     public void SkipIntro()
     {
-        if (DialogueSystem.Instance != null && DialogueSystem.Instance.dialoguePanel != null && DialogueSystem.Instance.dialoguePanel.activeSelf)
-        {
-            // Chuyển sang câu thoại tiếp theo thay vì kết thúc toàn bộ đoạn thoại của ảnh
-            DialogueSystem.Instance.DisplayNextSentence();
-        }
-        else
-        {
-            StopAllCoroutines();
-            // Nếu đang trong thời gian hiển thị hình ảnh không có thoại (đã hiển thị đủ số giây), thì tự nhảy slide luôn
-            currentSlideIndex++;
-            StartSlide(currentSlideIndex);
-        }
+        SkipAllIntro();
     }
 
     // Nút Bỏ qua toàn bộ Intro (Tự về màn hình hướng dẫn/game ngay lập tức)

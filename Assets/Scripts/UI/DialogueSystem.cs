@@ -159,15 +159,7 @@ public class DialogueSystem : MonoBehaviour
             // Hiện xong câu rồi thì bắt đầu đếm ngược để tắt/chuyển câu
             if (audioSource != null && audioSource.clip != null)
             {
-                if (audioSource.isPlaying)
-                {
-                    autoCloseTimer = (audioSource.clip.length - audioSource.time) + 0.2f;
-                }
-                else
-                {
-                    autoCloseTimer = 0.5f;
-                }
-                
+                autoCloseTimer = audioSource.clip.length + 0.2f; // Đợi trọn vẹn clip xong
                 if (currentDuration > 0) autoCloseTimer = currentDuration;
             }
             else
@@ -192,18 +184,17 @@ public class DialogueSystem : MonoBehaviour
         // Phát sự kiện để các script khác (như TalkToNPC) biết mà đổi góc cam
         OnLineStarted?.Invoke(currentLine);
 
-        // Phát giọng lồng tiếng nếu có
+        // Phát giọng lồng tiếng nếu có (Sử dụng PlayOneShot hỗ trợ âm thanh chồng đè)
         if (audioSource != null)
         {
-            audioSource.Stop(); // Ngừng câu nói cũ
             if (currentLine.voiceClip != null)
             {
-                audioSource.clip = currentLine.voiceClip;
-                audioSource.Play();
+                audioSource.PlayOneShot(currentLine.voiceClip);
+                audioSource.clip = currentLine.voiceClip; // Gán tạm để gõ chữ tính được độ dài
             }
             else
             {
-                audioSource.clip = null; // Cần thêm dòng này để clear clip cũ
+                audioSource.clip = null; // Clear clip cũ
             }
         }
 
@@ -229,17 +220,7 @@ public class DialogueSystem : MonoBehaviour
         // Gõ xong hết chữ rồi thì bắt đầu đếm ngược để tự đóng bảng/chuyển câu
         if (audioSource != null && audioSource.clip != null)
         {
-            if (audioSource.isPlaying)
-            {
-                // Nếu âm thanh vẫn đang phát, chờ tới khi nó phát xong (cộng thêm 0.2s cho đỡ gắt)
-                autoCloseTimer = (audioSource.clip.length - audioSource.time) + 0.2f;
-            }
-            else
-            {
-                // Âm thanh đã phát xong trước cả khi gõ chữ xong -> Đợi 0.5s rồi chuyển qua câu tiếp
-                autoCloseTimer = 0.5f;
-            }
-
+            autoCloseTimer = audioSource.clip.length + 0.2f; // Chờ trọn vẹn clip lồng tiếng
             if (currentDuration > 0) autoCloseTimer = currentDuration;
         }
         else

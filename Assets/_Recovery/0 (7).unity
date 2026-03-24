@@ -13481,10 +13481,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 184262944}
     - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
-      propertyPath: rollVolume
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: footstepSound
       value: 
       objectReference: {fileID: 8300000, guid: e3af8606da596ff40bc907821a058f14, type: 3}

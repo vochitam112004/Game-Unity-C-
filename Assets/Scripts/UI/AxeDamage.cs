@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class AxeDamage : MonoBehaviour
 {
@@ -11,48 +11,100 @@ public class AxeDamage : MonoBehaviour
     public int wolfDamage = 1;
     public float bossDamage = 50f; // Chằn Tinh máu tận 1000, mỗi nhát chém 50 máu cho vừa tầm
 
-    private void OnTriggerEnter(Collider other)
+    [Header("Cấu hình Âm thanh")]
+    public AudioClip hitSound; // Kéo tiếng chém trúng thịt vào đây
+    private AudioSource audioSource;
+
+    private Collider triggerCollider;
+    private System.Collections.Generic.List<Collider> alreadyHit = new System.Collections.Generic.List<Collider>();
+
+    void Start()
     {
-        // Chỉ xử lý khi chạm vào vật thể có tag "Enemy"
-        if (other.CompareTag("Enemy"))
+        triggerCollider = GetComponent<Collider>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
         {
-            bool isHitSuccess = false; // Cờ đánh dấu xem có chém trúng không
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+    }
 
-            // 1. Kiểm tra xem có trúng Sói không
-            WolfController wolf = other.GetComponent<WolfController>();
-            if (wolf != null)
+    void Update()
+    {
+        // Nếu Collider bị tắt (không tấn công), reset danh sách đã trúng
+        if (triggerCollider == null || !triggerCollider.enabled)
+        {
+            alreadyHit.Clear();
+            return;
+        }
+
+        Collider[] hits;
+        
+        if (triggerCollider is BoxCollider box)
+        {
+            Vector3 center = transform.TransformPoint(box.center);
+            Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
+            hits = Physics.OverlapBox(center, halfExtents, transform.rotation);
+        }
+        else if (triggerCollider is SphereCollider sphere)
+        {
+            Vector3 center = transform.TransformPoint(sphere.center);
+            float radius = sphere.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+            hits = Physics.OverlapSphere(center, radius);
+        }
+        else
+        {
+            // Fallback nếu dùng dạng khác
+            hits = Physics.OverlapBox(triggerCollider.bounds.center, triggerCollider.bounds.extents, Quaternion.identity);
+        }
+
+        foreach (var other in hits)
+        {
+            if (other.CompareTag("Enemy") && !alreadyHit.Contains(other))
             {
-                wolf.TakeDamage(wolfDamage);
-                isHitSuccess = true;
+                alreadyHit.Add(other); // Đánh dấu đã chém trúng
+                ProcessHit(other);
+            }
+        }
+    }
+
+    private void ProcessHit(Collider other)
+    {
+        bool isHitSuccess = false;
+
+        WolfController wolf = other.GetComponent<WolfController>();
+        if (wolf != null)
+        {
+            wolf.TakeDamage(wolfDamage);
+            isHitSuccess = true;
+        }
+
+        BossBrain boss = other.GetComponent<BossBrain>();
+        if (boss != null)
+        {
+            boss.TakeDamage(bossDamage);
+            isHitSuccess = true;
+        }
+
+        if (isHitSuccess)
+        {
+            if (hitSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(hitSound);
             }
 
-            // 2. Kiểm tra xem có trúng Chằn Tinh (BossBrain) không
-            BossBrain boss = other.GetComponent<BossBrain>();
-            if (boss != null)
+            if (bloodPrefab != null)
             {
-                boss.TakeDamage(bossDamage);
-                isHitSuccess = true;
+                Instantiate(bloodPrefab, other.transform.position + Vector3.up * 1.2f, Quaternion.identity);
             }
 
-            // 3. XỬ LÝ HIỆU ỨNG CHUNG (Tóe máu & Rung màn hình)
-            // Nếu chém trúng bất kỳ con quái nào, khối lệnh này sẽ chạy
-            if (isHitSuccess)
+            CameraShake shaker = Camera.main.GetComponent<CameraShake>();
+            if (shaker != null)
             {
-                // Tạo hiệu ứng máu văng ra (Cộng thêm Vector3.up * 1.2f để xịt máu từ tầm ngực quái)
-                if (bloodPrefab != null)
-                {
-                    Instantiate(bloodPrefab, other.transform.position + Vector3.up * 1.2f, Quaternion.identity);
-                }
-
-                // Kích hoạt rung màn hình
-                CameraShake shaker = Camera.main.GetComponent<CameraShake>();
-                if (shaker != null)
-                {
-                    StartCoroutine(shaker.Shake(shakeDuration, shakeMagnitude));
-                }
-
-                Debug.Log("BỤP! Chém trúng quái, rung màn hình và tóe máu!");
+                StartCoroutine(shaker.Shake(shakeDuration, shakeMagnitude));
             }
+
+            Debug.Log("BỤP! Chém trúng quái qua OverlapBox!");
         }
     }
 }

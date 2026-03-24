@@ -2152,9 +2152,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: bcb8d5ff59750774d9c913429c4a73c9, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -8053,7 +8053,6 @@ MonoBehaviour:
   healthText: {fileID: 1496501627}
   uiCanvas: {fileID: 1979344618}
   attackHitbox: {fileID: 0}
-  dieSound: {fileID: 0}
 --- !u!195 &1461652753
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -8097,6 +8096,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 0.5
   deathDialogues:
   - sentence: 
     duration: 0
@@ -8667,7 +8667,6 @@ MonoBehaviour:
   healthText: {fileID: 1496501627}
   uiCanvas: {fileID: 1979344618}
   attackHitbox: {fileID: 0}
-  dieSound: {fileID: 0}
 --- !u!54 &1575602429
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8738,6 +8737,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 0.5
   deathDialogues:
   - sentence: 
     duration: 0
@@ -12377,7 +12377,6 @@ MonoBehaviour:
   healthText: {fileID: 1496501627}
   uiCanvas: {fileID: 1979344618}
   attackHitbox: {fileID: 0}
-  dieSound: {fileID: 0}
 --- !u!54 &2013422883
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12448,6 +12447,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 0.5
   deathDialogues:
   - sentence: 
     duration: 0
@@ -12743,7 +12743,6 @@ MonoBehaviour:
   healthText: {fileID: 1496501627}
   uiCanvas: {fileID: 1979344618}
   attackHitbox: {fileID: 0}
-  dieSound: {fileID: 0}
 --- !u!195 &2049530443
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -12787,6 +12786,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 0.5
   deathDialogues:
   - sentence: 
     duration: 0
@@ -12826,7 +12826,6 @@ MonoBehaviour:
   healthText: {fileID: 1496501627}
   uiCanvas: {fileID: 1979344618}
   attackHitbox: {fileID: 0}
-  dieSound: {fileID: 0}
 --- !u!54 &2050216881
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12897,6 +12896,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 0.5
   deathDialogues:
   - sentence: 
     duration: 0
@@ -12930,7 +12930,6 @@ MonoBehaviour:
   shakeMagnitude: 0.2
   wolfDamage: 1
   bossDamage: 50
-  hitSound: {fileID: 0}
 --- !u!65 &2060339630
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13229,6 +13228,7 @@ MonoBehaviour:
     animationTrigger: 
     isStopPoint: 0
     voiceClip: {fileID: 8300000, guid: cda82f6948c6ce44fa672c247a07ed29, type: 3}
+  hurtTalkChance: 1
   deathDialogues:
   - sentence: "H\xE3y... \u0111\u1EE3i... \u0111\u1EA5y..."
     duration: 0
@@ -13465,10 +13465,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2060339630}
     - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
-      propertyPath: rollSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 919baa8e705bb1e46a8a54b9ae85f6f9, type: 3}
-    - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: back_speed
       value: 3
       objectReference: {fileID: 0}
@@ -13480,14 +13476,6 @@ PrefabInstance:
       propertyPath: playerAnim
       value: 
       objectReference: {fileID: 184262944}
-    - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
-      propertyPath: rollVolume
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
-      propertyPath: footstepSound
-      value: 
-      objectReference: {fileID: 8300000, guid: e3af8606da596ff40bc907821a058f14, type: 3}
     - target: {fileID: 1111111111111111111, guid: 6d9747ec785ec334895fabd221d4372e, type: 3}
       propertyPath: swingSounds.Array.size
       value: 1

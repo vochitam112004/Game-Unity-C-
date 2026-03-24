@@ -37,6 +37,7 @@ public class BossBrain : MonoBehaviour
     public GameObject bloodVFX;
     public Transform hitPoint;
     public float attackDamage = 50f;
+    public AudioClip dieSound; // m thanh khi Boss chết
 
     public GameObject healthBarCanvas; // Kéo cái BossHealthCanvas vào đây
 
@@ -267,6 +268,11 @@ public class BossBrain : MonoBehaviour
     void Die()
     {
         Debug.Log("BOSS ĐÃ CHẾT!");
+
+        if (dieSound != null)
+        {
+            AudioSource.PlayClipAtPoint(dieSound, transform.position);
+        }
 
         // --- GỌI SCRIPT TRĂN TRỐI KHI CHẾT ---
         TalkToBoss talkScript = GetComponent<TalkToBoss>();
