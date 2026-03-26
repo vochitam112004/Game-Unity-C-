@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     public float runStepDelay = 0.35f; // [MỚI] Tần suất bước chạy
     public AudioClip rollSound;        // [MỚI] m thanh khi lăn cuộn người
     [Range(0f, 1f)] public float rollVolume = 0.5f; // [MỚI] m lượng tiếng lăn
+    [Range(0f, 1f)] public float footstepVolume = 0.6f; // [MỚI] m lượng bước chân
     private float stepTimer = 0f;      // [MỚI] Bộ đếm thời gian
     private AudioSource audioSource;
 
@@ -354,7 +355,7 @@ public class Player : MonoBehaviour
     {
         if (audioSource != null && footstepSound != null)
         {
-            audioSource.PlayOneShot(footstepSound, 0.6f); 
+            audioSource.PlayOneShot(footstepSound, footstepVolume); 
         }
     }
 
